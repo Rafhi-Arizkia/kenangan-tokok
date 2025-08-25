@@ -1,0 +1,24 @@
+node_modules/
+dist/
+.env
+.env.local
+.DS_Store
+.vscode/
+.idea/
+coverage/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+/.parcel-cache
+/.turbo
+logs/
+*.log
+.sequelizerc
+SequelizeMeta
+SequelizeData
+
+# Docker
+docker-compose.override.yml
+docker-compose.*.yml
+Dockerfile
+docker-compose.yml

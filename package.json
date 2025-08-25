@@ -1,0 +1,39 @@
+{
+  "name": "kenangan-commerce-backend",
+  "version": "1.0.0",
+  "description": "Commerce backend with Fastify, TypeScript, and Sequelize",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "db:create": "sequelize-cli db:create",
+    "db:migrate": "NODE_OPTIONS='-r ts-node/register/transpile-only' sequelize-cli db:migrate",
+    "db:migrate:undo": "NODE_OPTIONS='-r ts-node/register/transpile-only' sequelize-cli db:migrate:undo:all",
+    "db:seed": "sequelize-cli db:seed:all"
+  },
+  "keywords": [
+    "fastify",
+    "typescript",
+    "sequelize",
+    "commerce",
+    "api"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fastify/cors": "^8.4.1",
+    "@fastify/helmet": "^11.1.1",
+    "dotenv": "^17.2.1",
+    "fastify": "^4.24.3",
+    "mysql2": "^3.6.5",
+    "sequelize": "^6.35.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.9.0",
+    "sequelize-cli": "^6.6.3",
+    "ts-node": "^10.9.1",
+    "tsx": "^4.4.0",
+    "typescript": "^5.2.2"
+  }
+}

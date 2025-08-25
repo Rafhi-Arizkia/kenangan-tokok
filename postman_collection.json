@@ -1,0 +1,134 @@
+{
+  "info": {
+    "name": "Kenangan Commerce API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0",
+    "description": "Collection updated to match DTOs and query params"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["health"]
+        }
+      }
+    },
+    {
+      "name": "Shops",
+      "item": [
+        {
+          "name": "List Shops",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/shops?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1","shops"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Shop",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": 1,\n  \"name\": \"Toko Contoh\",\n  \"description\": \"Deskripsi toko contoh\",\n  \"phone\": \"081234567890\",\n  \"email\": \"owner@example.com\",\n  \"address\": \"Jl. Contoh No.1\",\n  \"city\": \"Jakarta\",\n  \"province\": \"DKI Jakarta\",\n  \"postal_code\": \"10110\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/v1/shops", "host": ["{{baseUrl}}"], "path": ["v1","shops"] }
+          }
+        },
+        {
+          "name": "Get Shop by ID",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/v1/shops/:id", "host": ["{{baseUrl}}"], "path": ["v1","shops",":id"] } }
+        }
+      ]
+    },
+    {
+      "name": "Gifts",
+      "item": [
+        {
+          "name": "List Gifts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/v1/gifts?page=1&limit=10", "host": ["{{baseUrl}}"], "path": ["v1","gifts"], "query": [ { "key": "page", "value": "1" }, { "key": "limit", "value": "10" } ] }
+          }
+        },
+        {
+          "name": "Create Gift",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shop_id\": 1,\n  \"category_id\": 1,\n  \"name\": \"Kue Ulang Tahun\",\n  \"description\": \"Kue cokelat ukuran sedang\",\n  \"price\": 150000.00,\n  \"stock\": 10,\n  \"min_order\": 1\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/v1/gifts", "host": ["{{baseUrl}}"], "path": ["v1","gifts"] }
+          }
+        },
+        {
+          "name": "Get Gift by ID",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/v1/gifts/:id", "host": ["{{baseUrl}}"], "path": ["v1","gifts",":id"] } }
+        },
+        {
+          "name": "Add Gift Image",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"gift_id\": 1,\n  \"image_url\": \"https://example.com/kue.jpg\",\n  \"is_primary\": true\n}\n" },
+            "url": { "raw": "{{baseUrl}}/v1/gifts/images", "host": ["{{baseUrl}}"], "path": ["v1","gifts","images"] }
+          }
+        },
+        {
+          "name": "Add Gift Review",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"gift_id\": 1,\n  \"rating\": 5,\n  \"review_text\": \"Mantap kualitasnya\"\n}\n" },
+            "url": { "raw": "{{baseUrl}}/v1/gifts/reviews", "host": ["{{baseUrl}}"], "path": ["v1","gifts","reviews"] }
+          }
+        },
+        {
+          "name": "Add Gift Specification",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"gift_id\": 1,\n  \"name\": \"Berat\",\n  \"value\": \"500\",\n  \"unit\": \"gram\"\n}\n" },
+            "url": { "raw": "{{baseUrl}}/v1/gifts/specifications", "host": ["{{baseUrl}}"], "path": ["v1","gifts","specifications"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"order_group_id\": 1,\n  \"shop_id\": 1,\n  \"order_status\": \"pending\",\n  \"total_amount\": 150000.00,\n  \"grand_total\": 165000.00,\n  \"items\": [ { \"gift_id\": 1, \"quantity\": 1, \"total_price\": 150000.00 } ]\n}\n" },
+            "url": { "raw": "{{baseUrl}}/v1/orders", "host": ["{{baseUrl}}"], "path": ["v1","orders"] }
+          }
+        },
+        {
+          "name": "Get Order by ID",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/v1/orders/:id", "host": ["{{baseUrl}}"], "path": ["v1","orders",":id"] } }
+        }
+      ]
+    }
+  ],
+  "variable": [ { "key": "baseUrl", "value": "http://localhost:3000", "type": "string" } ]
+}
