@@ -18,13 +18,13 @@ export class ShopCategoryModel
   extends Model<ShopCategoryAttributes, ShopCategoryCreationAttributes>
   implements ShopCategoryAttributes
 {
-  public id!: number;
-  public category_id!: number;
-  public sub_category!: string;
-  public shop_id!: number;
-  public createdAt!: Date;
-  public updatedAt!: Date;
-  public deletedAt?: Date | null;
+  declare id: number;
+  declare category_id: number;
+  declare sub_category: string;
+  declare shop_id: number;
+  declare createdAt: Date;
+  declare updatedAt: Date;
+  declare deletedAt?: Date | null;
 }
 
 ShopCategoryModel.init(

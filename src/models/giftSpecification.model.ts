@@ -18,13 +18,13 @@ export class GiftSpecification
   extends Model<GiftSpecificationAttributes, GiftSpecificationCreationAttributes>
   implements GiftSpecificationAttributes 
 {
-  public id!: string;
-  public gift_id!: number;
-  public key!: string;
-  public value!: string;
-  public createdAt!: Date;
-  public updatedAt!: Date;
-  public deletedAt?: Date | null;
+  declare id: string;
+  declare gift_id: number;
+  declare key: string;
+  declare value: string;
+  declare createdAt: Date;
+  declare updatedAt: Date;
+  declare deletedAt?: Date | null;
 }
 
 GiftSpecification.init(

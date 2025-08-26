@@ -14,9 +14,9 @@ export class OrderStatusNames
   extends Model<OrderStatusNamesAttributes, OrderStatusNamesCreationAttributes>
   implements OrderStatusNamesAttributes
 {
-  public id!: number;
-  public name!: string;
-  public aliases_ind!: string;
+  declare id: number;
+  declare name: string;
+  declare aliases_ind: string;
 }
 
 OrderStatusNames.init(

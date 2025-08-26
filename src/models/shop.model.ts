@@ -29,24 +29,24 @@ export class Shop
   extends Model<ShopAttributes, ShopCreationAttributes>
   implements ShopAttributes
 {
-  public id!: number;
-  public user_id!: number;
-  public name!: string;
-  public description?: string;
-  public display_address?: string;
-  public photo?: string;
-  public phone?: string;
-  public contact?: string;
-  public fee_percent?: number;
-  public bank_type?: string;
-  public bank_number?: string;
-  public bank_name?: string;
-  public use_shipper?: boolean;
-  public createdAt!: Date;
-  public updatedAt!: Date;
-  public deletedAt?: Date;
-  public is_can_claim!: number;
-  public is_claimed!: number;
+  declare id: number;
+  declare user_id: number;
+  declare name: string;
+  declare description?: string;
+  declare display_address?: string;
+  declare photo?: string;
+  declare phone?: string;
+  declare contact?: string;
+  declare fee_percent?: number;
+  declare bank_type?: string;
+  declare bank_number?: string;
+  declare bank_name?: string;
+  declare use_shipper?: boolean;
+  declare createdAt: Date;
+  declare updatedAt: Date;
+  declare deletedAt?: Date;
+  declare is_can_claim: number;
+  declare is_claimed: number;
 }
 
 Shop.init(

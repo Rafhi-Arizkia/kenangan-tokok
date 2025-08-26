@@ -17,12 +17,12 @@ export class GiftImage
   extends Model<GiftImageAttributes, GiftImageCreationAttributes>
   implements GiftImageAttributes
 {
-  public id!: string;
-  public gift_id!: number;
-  public url!: string;
-  public created_at!: Date;
-  public updated_at!: Date;
-  public deleted_at?: Date;
+  declare id: string;
+  declare gift_id: number;
+  declare url: string;
+  declare created_at: Date;
+  declare updated_at: Date;
+  declare deleted_at?: Date;
 }
 
 GiftImage.init(

@@ -18,15 +18,15 @@ export interface GiftVariantCreationAttributes
 
 export class GiftVariant extends Model<GiftVariantAttributes, GiftVariantCreationAttributes>
   implements GiftVariantAttributes {
-  public id!: number;
-  public gift_id?: number;
-  public variant_key1!: string;
-  public variant_key2?: string;
-  public variant_value1!: string;
-  public variant_value2?: string;
-  public created_at!: Date;
-  public updated_at!: Date;
-  public deleted_at?: Date | null;
+  declare id: number;
+  declare gift_id?: number;
+  declare variant_key1: string;
+  declare variant_key2?: string;
+  declare variant_value1: string;
+  declare variant_value2?: string;
+  declare created_at: Date;
+  declare updated_at: Date;
+  declare deleted_at?: Date | null;
 }
 
 GiftVariant.init(

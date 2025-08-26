@@ -20,15 +20,15 @@ export class OrderItemModel
   extends Model<OrderItemAttributes, OrderItemCreationAttributes>
   implements OrderItemAttributes
 {
-  public id!: number;
-  public name!: string;
-  public price!: number;
-  public vendor_fee!: number;
-  public qty!: number;
-  public note?: string;
-  public photo!: string;
-  public order_id!: string;
-  public gift_id!: number;
+  declare id: number;
+  declare name: string;
+  declare price: number;
+  declare vendor_fee: number;
+  declare qty: number;
+  declare note?: string;
+  declare photo: string;
+  declare order_id: string;
+  declare gift_id: number;
 
   // associations
   public static associate(models: any) {

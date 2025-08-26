@@ -14,10 +14,10 @@ export class Category
   extends Model<CategoryAttributes, CategoryCreationAttributes>
   implements CategoryAttributes 
 {
-  public id!: number;
-  public name?: string;
-  public parent_id?: number;
-  public image_url?: string;
+  declare id: number;
+  declare name?: string;
+  declare parent_id?: number;
+  declare image_url?: string;
 }
 
 Category.init(

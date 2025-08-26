@@ -26,18 +26,18 @@ export class OrderModel
   extends Model<OrderAttributes, OrderCreationAttributes>
   implements OrderAttributes
 {
-  public id!: string;
-  public invoice_url!: string | null;
-  public shipper_id!: string | null;
-  public awb!: string | null;
-  public pickup_code!: string | null;
-  public confirmation_deadline!: Date;
-  public date_ordered_for!: Date;
-  public shop_id!: string;
-  public order_group_id!: number;
-  public createdAt!: Date;
-  public updatedAt!: Date;
-  public deletedAt!: Date | null;
+  declare id: string;
+  declare invoice_url: string | null;
+  declare shipper_id: string | null;
+  declare awb: string | null;
+  declare pickup_code: string | null;
+  declare confirmation_deadline: Date;
+  declare date_ordered_for: Date;
+  declare shop_id: string;
+  declare order_group_id: number;
+  declare createdAt: Date;
+  declare updatedAt: Date;
+  declare deletedAt: Date | null;
 
   // associations
   public static associate(models: any) {

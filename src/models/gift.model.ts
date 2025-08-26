@@ -53,34 +53,34 @@ export class GiftModel
   extends Model<GiftAttributes, GiftCreationAttributes>
   implements GiftAttributes
 {
-  public id!: number;
-  public shop_id!: number;
-  public category_id!: number;
-  public sub_category!: string;
-  public name!: string;
-  public description!: string;
-  public price!: number;
-  public total_sold!: number;
-  public photo!: string;
-  public minimum_days!: number;
-  public is_available!: boolean;
-  public weight!: number;
-  public height!: number;
-  public width!: number;
-  public length!: number;
-  public external_id?: string | null;
-  public external_url?: string | null;
-  public rating?: number | null;
-  public status_download_photo?: "PENDING" | "SUCCESS" | "FAILED";
-  public gift_share_link?: string | null;
-  public extra_data?: string | null;
-  public stock!: number;
-  public createdAt!: Date;
-  public updatedAt!: Date;
-  public syncedAt?: Date | null;
-  public deletedAt?: Date | null;
-  public gift_variants_id?: number | null;
-  public variant_combinations?: string | null;
+  declare id: number;
+  declare shop_id: number;
+  declare category_id: number;
+  declare sub_category: string;
+  declare name: string;
+  declare description: string;
+  declare price: number;
+  declare total_sold: number;
+  declare photo: string;
+  declare minimum_days: number;
+  declare is_available: boolean;
+  declare weight: number;
+  declare height: number;
+  declare width: number;
+  declare length: number;
+  declare external_id?: string | null;
+  declare external_url?: string | null;
+  declare rating?: number | null;
+  declare status_download_photo?: "PENDING" | "SUCCESS" | "FAILED";
+  declare gift_share_link?: string | null;
+  declare extra_data?: string | null;
+  declare stock: number;
+  declare createdAt: Date;
+  declare updatedAt: Date;
+  declare syncedAt?: Date | null;
+  declare deletedAt?: Date | null;
+  declare gift_variants_id?: number | null;
+  declare variant_combinations?: string | null;
 }
 
 GiftModel.init(

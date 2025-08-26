@@ -26,14 +26,14 @@ export class OrderDetailModel
   extends Model<OrderDetailAttributes, OrderDetailCreationAttributes>
   implements OrderDetailAttributes
 {
-  public id!: number;
-  public external_id!: string;
-  public shop_id!: number;
-  public order_id!: string;
-  public amount!: number;
-  public createdAt!: Date;
-  public updatedAt!: Date;
-  public deletedAt!: Date | null;
+  declare id: number;
+  declare external_id: string;
+  declare shop_id: number;
+  declare order_id: string;
+  declare amount: number;
+  declare createdAt: Date;
+  declare updatedAt: Date;
+  declare deletedAt: Date | null;
 }
 
 OrderDetailModel.init(

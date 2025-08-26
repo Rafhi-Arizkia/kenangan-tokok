@@ -27,21 +27,21 @@ export class ShopAddress
   extends Model<ShopAddressAttributes, ShopAddressCreationAttributes>
   implements ShopAddressAttributes
 {
-  public id!: string;
-  public shop_id!: number;
-  public working_hours?: string;
-  public is_open!: boolean;
-  public address?: string;
-  public address_description?: string;
-  public area_id?: number;
-  public suburb_id?: number;
-  public postal_code?: string;
-  public city?: string;
-  public kecamatan?: string;
-  public kelurahan?: string;
-  public lat?: string;
-  public lng?: string;
-  public filter__province_id?: number;
+  declare id: string;
+  declare shop_id: number;
+  declare working_hours?: string;
+  declare is_open: boolean;
+  declare address?: string;
+  declare address_description?: string;
+  declare area_id?: number;
+  declare suburb_id?: number;
+  declare postal_code?: string;
+  declare city?: string;
+  declare kecamatan?: string;
+  declare kelurahan?: string;
+  declare lat?: string;
+  declare lng?: string;
+  declare filter__province_id?: number;
 }
 
 ShopAddress.init(

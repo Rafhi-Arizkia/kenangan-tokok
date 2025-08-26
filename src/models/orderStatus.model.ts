@@ -15,10 +15,10 @@ export class OrderStatus
   extends Model<OrderStatusAttributes, OrderStatusCreationAttributes>
   implements OrderStatusAttributes
 {
-  public id!: number;
-  public status_name_id!: number;
-  public description?: string;
-  public order_id!: string;
+  declare id: number;
+  declare status_name_id: number;
+  declare description?: string;
+  declare order_id: string;
 }
 
 OrderStatus.init(

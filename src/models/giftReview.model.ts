@@ -25,17 +25,17 @@ export class GiftReview
   extends Model<GiftReviewAttributes, GiftReviewCreationAttributes>
   implements GiftReviewAttributes
 {
-  public id!: string;
-  public gift_id!: number;
-  public user_id?: number;
-  public order_item_id?: number;
-  public display_name?: string;
-  public message!: string;
-  public rating!: number;
-  public external_id?: string;
-  public createdAt!: Date;
-  public updatedAt!: Date;
-  public deletedAt?: Date;
+  declare id: string;
+  declare gift_id: number;
+  declare user_id?: number;
+  declare order_item_id?: number;
+  declare display_name?: string;
+  declare message: string;
+  declare rating: number;
+  declare external_id?: string;
+  declare createdAt: Date;
+  declare updatedAt: Date;
+  declare deletedAt?: Date;
 }
 
 GiftReview.init(
