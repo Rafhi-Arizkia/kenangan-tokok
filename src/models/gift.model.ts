@@ -1,5 +1,5 @@
-import { Model, DataTypes, Optional } from 'sequelize';
-import { sequelize } from '../database/connection';
+import { Model, DataTypes, Optional } from "sequelize";
+import { sequelize } from "../database/connection";
 
 export interface GiftAttributes {
   id: number;
@@ -20,7 +20,7 @@ export interface GiftAttributes {
   external_id?: string | null;
   external_url?: string | null;
   rating?: number | null;
-  status_download_photo?: 'PENDING' | 'SUCCESS' | 'FAILED';
+  status_download_photo?: "PENDING" | "SUCCESS" | "FAILED";
   gift_share_link?: string | null;
   extra_data?: string | null;
   stock: number;
@@ -35,22 +35,24 @@ export interface GiftAttributes {
 export interface GiftCreationAttributes
   extends Optional<
     GiftAttributes,
-    | 'id'
-    | 'total_sold'
-    | 'external_id'
-    | 'external_url'
-    | 'rating'
-    | 'status_download_photo'
-    | 'gift_share_link'
-    | 'extra_data'
-    | 'syncedAt'
-    | 'deletedAt'
-    | 'gift_variants_id'
-    | 'variant_combinations'
+    | "id"
+    | "total_sold"
+    | "external_id"
+    | "external_url"
+    | "rating"
+    | "status_download_photo"
+    | "gift_share_link"
+    | "extra_data"
+    | "syncedAt"
+    | "deletedAt"
+    | "gift_variants_id"
+    | "variant_combinations"
   > {}
 
-export class GiftModel extends Model<GiftAttributes, GiftCreationAttributes>
-  implements GiftAttributes {
+export class GiftModel
+  extends Model<GiftAttributes, GiftCreationAttributes>
+  implements GiftAttributes
+{
   public id!: number;
   public shop_id!: number;
   public category_id!: number;
@@ -69,7 +71,7 @@ export class GiftModel extends Model<GiftAttributes, GiftCreationAttributes>
   public external_id?: string | null;
   public external_url?: string | null;
   public rating?: number | null;
-  public status_download_photo?: 'PENDING' | 'SUCCESS' | 'FAILED';
+  public status_download_photo?: "PENDING" | "SUCCESS" | "FAILED";
   public gift_share_link?: string | null;
   public extra_data?: string | null;
   public stock!: number;
@@ -164,8 +166,8 @@ GiftModel.init(
       allowNull: true,
     },
     status_download_photo: {
-      type: DataTypes.ENUM('PENDING', 'SUCCESS', 'FAILED'),
-      defaultValue: 'PENDING',
+      type: DataTypes.ENUM("PENDING", "SUCCESS", "FAILED"),
+      defaultValue: "PENDING",
       allowNull: true,
     },
     gift_share_link: {
@@ -208,15 +210,19 @@ GiftModel.init(
   },
   {
     sequelize,
-    tableName: 'gift',
+    tableName: "gift",
+    underscored: false,
     indexes: [
       {
-        type: 'FULLTEXT',
-        name: 'gift_name_idx',
-        fields: ['name'],
+        type: "FULLTEXT",
+        name: "gift_name_idx",
+        fields: ["name"],
       },
     ],
     timestamps: true,
     paranoid: true, // agar pakai deletedAt
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
+    deletedAt: "deletedAt",
   }
 );

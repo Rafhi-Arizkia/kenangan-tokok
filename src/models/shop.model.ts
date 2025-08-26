@@ -1,5 +1,5 @@
-import { Model, DataTypes, Optional } from 'sequelize';
-import { sequelize } from '../database/connection';
+import { Model, DataTypes, Optional } from "sequelize";
+import { sequelize } from "../database/connection";
 
 export interface ShopAttributes {
   id: number;
@@ -19,12 +19,16 @@ export interface ShopAttributes {
   updatedAt: Date;
   deletedAt?: Date;
   is_can_claim: number; // TINYINT(1) → pakai number (0/1)
-  is_claimed: number;   // TINYINT(1) → pakai number (0/1)
+  is_claimed: number; // TINYINT(1) → pakai number (0/1)
 }
 
-export interface ShopCreationAttributes extends Optional<ShopAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
+export interface ShopCreationAttributes
+  extends Optional<ShopAttributes, "id" | "createdAt" | "updatedAt"> {}
 
-export class Shop extends Model<ShopAttributes, ShopCreationAttributes> implements ShopAttributes {
+export class Shop
+  extends Model<ShopAttributes, ShopCreationAttributes>
+  implements ShopAttributes
+{
   public id!: number;
   public user_id!: number;
   public name!: string;
@@ -127,15 +131,22 @@ Shop.init(
   },
   {
     sequelize,
-    modelName: 'Shop',
-    tableName: 'shop',
+    modelName: "Shop",
+    tableName: "shop",
     indexes: [
       {
-        type: 'FULLTEXT',
-        name: 'shop_name_idx',
-        fields: ['name'],
+        type: "FULLTEXT",
+        name: "shop_name_idx",
+        fields: ["name"],
       },
     ],
+    timestamps: true,
+    paranoid: true,
+    underscored: false,
+    // Explicitly map timestamp attributes to camelCase column names
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
+    deletedAt: "deletedAt",
   }
 );
 

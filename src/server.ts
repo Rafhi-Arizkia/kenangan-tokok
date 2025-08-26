@@ -4,6 +4,7 @@ import cors from "@fastify/cors";
 import { sequelize } from "./database/connection";
 // Import models index to initialize all models and associations
 import "./models";
+import { defineAssociations } from "./models";
 import { registerScalar } from "./plugins/scalar.plugin";
 import routesV1 from "./routes/v1/index.routes";
 import 'dotenv/config';
@@ -92,6 +93,13 @@ const registerSecurity = async (fastifyInstance: typeof server) => {
 
 const startServer = async () => {
   await registerSecurity(server);
+  // Ensure associations are defined before routes/controllers use them
+  try {
+    defineAssociations();
+  } catch (err) {
+    server.log.error('Failed to define model associations', (err as any) || 'unknown error');
+    throw err;
+  }
   await registerPluginAndRouting(server);
 };
 

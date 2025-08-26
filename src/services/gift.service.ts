@@ -1,12 +1,19 @@
 // Update the import path below if your models are located elsewhere, e.g. '../models/gift.model'
-import { GiftModel } from '../models/gift.model';
-import { GiftImageModel } from '../models/giftImage.model';
-import { GiftReviewModel } from '../models/giftReview.model';
-import { GiftSpecificationModel } from '../models/giftSpecification.model';
+import { GiftModel } from "../models/gift.model";
+import { GiftImageModel } from "../models/giftImage.model";
+import { GiftReviewModel } from "../models/giftReview.model";
+import { GiftSpecificationModel } from "../models/giftSpecification.model";
 // import { GiftVariantModel } from '../models/giftVariant.model'; // Uncomment if needed and exists
-import { CreateGiftDTO, UpdateGiftDTO, GiftQueryDTO, CreateGiftImageDTO, CreateGiftReviewDTO, CreateGiftSpecificationDTO } from '../dtos/gift.dto';
-import { paginationHelper } from '../utils/response';
-import { Op, WhereOptions } from 'sequelize';
+import {
+  CreateGiftDTO,
+  UpdateGiftDTO,
+  GiftQueryDTO,
+  CreateGiftImageDTO,
+  CreateGiftReviewDTO,
+  CreateGiftSpecificationDTO,
+} from "../dtos/gift.dto";
+import { paginationHelper } from "../utils/response";
+import { Op, WhereOptions } from "sequelize";
 
 export class GiftService {
   async getAllGifts(queryParams: GiftQueryDTO) {
@@ -17,9 +24,23 @@ export class GiftService {
       is_available,
       min_price,
       max_price,
-      sort_by = 'createdAt',
-      sort_order = 'DESC'
+      sort_by = "createdAt",
+      sort_order = "DESC",
     } = queryParams;
+
+    // Normalize sort_by values coming from DTO/schema (some clients use snake_case)
+    const sortMapping: Record<string, string> = {
+      created_at: "createdAt",
+      createdAt: "createdAt",
+      name: "name",
+      price: "price",
+      rating: "rating",
+      total_sold: "total_sold",
+      totalSold: "total_sold",
+    };
+
+    const sortField = sortMapping[String(sort_by)] || String(sort_by || "createdAt");
+    const sortOrder = String(sort_order || "DESC").toUpperCase();
 
     let { page = 1, limit = 10 } = queryParams;
 
@@ -35,7 +56,7 @@ export class GiftService {
       (whereCondition as any)[Op.or] = [
         { name: { [Op.like]: `%${search}%` } },
         { description: { [Op.like]: `%${search}%` } },
-        { tags: { [Op.like]: `%${search}%` } }
+        { tags: { [Op.like]: `%${search}%` } },
       ];
     }
 
@@ -63,14 +84,14 @@ export class GiftService {
       include: [
         {
           model: GiftImageModel,
-          as: 'images',
+          as: "images",
           // model has `url` and doesn't store is_primary; keep optional include
           required: false,
-        }
+        },
       ],
       offset,
       limit,
-      order: [[sort_by, sort_order]],
+  order: [[sortField, sortOrder]],
     });
 
     return {
@@ -86,14 +107,14 @@ export class GiftService {
   async getGiftById(id: number) {
     const gift = await GiftModel.findByPk(id, {
       include: [
-        { model: GiftImageModel, as: 'images' },
-        { model: GiftReviewModel, as: 'reviews' },
-        { model: GiftSpecificationModel, as: 'specifications' }
-      ]
+        { model: GiftImageModel, as: "images" },
+        { model: GiftReviewModel, as: "reviews" },
+        { model: GiftSpecificationModel, as: "specifications" },
+      ],
     });
 
     if (!gift) {
-      throw new Error('Gift not found');
+      throw new Error("Gift not found");
     }
     return gift;
   }
@@ -113,7 +134,7 @@ export class GiftService {
   async updateGift(id: number, giftData: UpdateGiftDTO) {
     const gift = await GiftModel.findByPk(id);
     if (!gift) {
-      throw new Error('Gift not found');
+      throw new Error("Gift not found");
     }
 
     await gift.update(giftData);
@@ -123,11 +144,11 @@ export class GiftService {
   async deleteGift(id: number) {
     const gift = await GiftModel.findByPk(id);
     if (!gift) {
-      throw new Error('Gift not found');
+      throw new Error("Gift not found");
     }
 
     await gift.destroy();
-    return { message: 'Gift deleted successfully' };
+    return { message: "Gift deleted successfully" };
   }
 
   async getGiftsByShopId(shopId: number) {
@@ -136,12 +157,14 @@ export class GiftService {
       include: [
         {
           model: GiftImageModel,
-          as: 'images',
-          where: { is_primary: true },
+          as: "images",
+          // don't filter by a non-existent `is_primary` column here;
+          // GiftImageModel only has `url` and timestamp fields
           required: false,
-        }
+        },
       ],
-      order: [['created_at', 'DESC']],
+      // use model attribute name (createdAt) which matches the GiftModel definition
+      order: [["createdAt", "DESC"]],
     });
     return gifts;
   }
@@ -170,14 +193,16 @@ export class GiftService {
 
   async addGiftSpecification(specData: CreateGiftSpecificationDTO) {
     // model uses 'key' instead of 'name'
-    const specification = await GiftSpecificationModel.create({ ...specData } as any);
+    const specification = await GiftSpecificationModel.create({
+      ...specData,
+    } as any);
     return specification;
   }
 
   async getGiftReviews(giftId: number) {
     const reviews = await GiftReviewModel.findAll({
       where: { gift_id: giftId },
-      order: [['createdAt', 'DESC']],
+      order: [["createdAt", "DESC"]],
     });
     return reviews;
   }

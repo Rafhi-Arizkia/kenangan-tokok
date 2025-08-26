@@ -11,7 +11,12 @@ export class ShopController {
       const result = await shopService.getAllShops(request.query);
       return ResponseHandler.success(reply, result.shops, 'Shops retrieved successfully', result.pagination);
     } catch (error: any) {
-      return ResponseHandler.serverError(reply, 'Failed to retrieve shops', error.message);
+  // Log full error for debugging
+  // eslint-disable-next-line no-console
+  console.error('getAllShops error:', error);
+  const errMsg = (error && (error.message || error.toString())) || 'Unknown error';
+  const errStack = error && error.stack ? error.stack : undefined;
+  return ResponseHandler.serverError(reply, 'Failed to retrieve shops', errStack || errMsg);
     }
   }
 

@@ -19,7 +19,12 @@ export class GiftController {
       const result = await giftService.getAllGifts(request.query);
       return ResponseHandler.success(reply, result.gifts, 'Gifts retrieved successfully', result.pagination);
     } catch (error: any) {
-      return ResponseHandler.error(reply, 'Failed to retrieve gifts', error.message);
+
+
+  console.error('getAllGifts error:', error);
+  const errMsg = (error && (error.message || error.toString())) || 'Unknown error';
+  const errStack = error && error.stack ? error.stack : undefined;
+  return ResponseHandler.error(reply, 'Failed to retrieve gifts', errStack || errMsg);
     }
   }
 
