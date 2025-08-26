@@ -50,13 +50,12 @@ export interface ShipmentDestinationDTO {
 }
 
 export interface UpdateOrderDTO {
-  order_status?: string;
-  total_amount?: number;
-  total_discount?: number;
-  shipping_cost?: number;
-  tax_amount?: number;
-  grand_total?: number;
-  notes?: string;
+  invoice_url?: string;
+  shipper_id?: string;
+  awb?: string;
+  pickup_code?: string;
+  confirmation_deadline?: Date;
+  date_ordered_for?: Date;
 }
 
 export interface OrderQueryDTO {
@@ -136,14 +135,13 @@ export interface OrderItemDTO {
 
 export interface CreateOrderItemDTO {
   order_id: string;
-  gift_id?: number;
-  gift_name?: string;
-  gift_price: number;
-  quantity: number;
-  total_price: number;
-  discount_amount?: number;
-  notes?: string;
-  variant_info?: string;
+  name: string;
+  price: number;
+  vendor_fee?: number;
+  qty: number;
+  note?: string;
+  photo: string;
+  gift_id: number;
 }
 
 export interface OrderDetailDTO {
@@ -176,24 +174,63 @@ export interface OrderShipmentDTO {
 
 export interface CreateOrderShipmentDTO {
   order_id: string;
-  courier_name?: string;
-  tracking_number?: string;
-  shipping_cost?: number;
-  estimated_delivery?: Date;
-  shipment_status: string;
-  shipping_address?: string;
-  notes?: string;
+  receiver_name: string;
+  receiver_phone: string;
+  sender_name: string;
+  sender_phone: string;
+  origin_lat: string;
+  origin_lng: string;
+  origin_address: string;
+  origin_description?: string;
+  origin_area: number;
+  dest_lat: string;
+  dest_lng: string;
+  dest_address: string;
+  dest_description?: string;
+  dest_area: number;
+  rate_id: number;
+  use_insurance: boolean;
+  package_heigth: number;
+  package_length: number;
+  package_type: number;
+  package_price: string;
+  package_weight: number;
+  package_width: number;
+  delivery_logistic_name: string;
+  delivery_method: string;
+  delivery_min_day: number;
+  delivery_max_day: number;
+  delivery_price: number;
 }
 
 export interface UpdateOrderShipmentDTO {
-  courier_name?: string;
-  tracking_number?: string;
-  shipping_cost?: number;
-  estimated_delivery?: Date;
-  actual_delivery?: Date;
-  shipment_status?: string;
-  shipping_address?: string;
-  notes?: string;
+  receiver_name?: string;
+  receiver_phone?: string;
+  sender_name?: string;
+  sender_phone?: string;
+  origin_lat?: string;
+  origin_lng?: string;
+  origin_address?: string;
+  origin_description?: string;
+  origin_area?: number;
+  dest_lat?: string;
+  dest_lng?: string;
+  dest_address?: string;
+  dest_description?: string;
+  dest_area?: number;
+  rate_id?: number;
+  use_insurance?: boolean;
+  package_heigth?: number;
+  package_length?: number;
+  package_type?: number;
+  package_price?: string;
+  package_weight?: number;
+  package_width?: number;
+  delivery_logistic_name?: string;
+  delivery_method?: string;
+  delivery_min_day?: number;
+  delivery_max_day?: number;
+  delivery_price?: number;
 }
 
 export interface OrderStatusDTO {
