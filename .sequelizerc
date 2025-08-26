@@ -1,0 +1,11 @@
+
+const path = require('path');
+
+module.exports = {
+  // Use the environment-based config (exports development/test/production)
+  config: path.resolve('config', 'sequelize.config.ts'),
+  'migrations-path': path.resolve('migrations'),
+  'models-path': path.resolve('src', 'models'),
+  'seeders-path': path.resolve('seeders'),
+};
+

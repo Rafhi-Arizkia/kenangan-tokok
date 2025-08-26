@@ -13,12 +13,3 @@ yarn-error.log*
 /.turbo
 logs/
 *.log
-.sequelizerc
-SequelizeMeta
-SequelizeData
-
-# Docker
-docker-compose.override.yml
-docker-compose.*.yml
-Dockerfile
-docker-compose.yml
