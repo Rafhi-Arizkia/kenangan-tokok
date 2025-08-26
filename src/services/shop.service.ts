@@ -85,7 +85,7 @@ export class ShopService {
   async getShopsByUserId(userId: number) {
     const shops = await ShopModel.findAll({
       where: { user_id: userId },
-      order: [["created_at", "DESC"]],
+      order: [["createdAt", "DESC"]],
     });
     return shops;
   }

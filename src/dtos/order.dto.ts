@@ -148,8 +148,6 @@ export interface OrderDetailDTO {
   id: number;
   order_id?: string;
   shop_id?: number;
-  wallet_id?: number;
-  cartItem_id?: number;
   detail_type?: string;
   detail_value?: string;
   notes?: string;

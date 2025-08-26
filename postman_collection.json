@@ -1,22 +1,103 @@
 {
   "info": {
-    "name": "Kenangan Commerce API",
+    "name": "Kenangan Commerce API - Complete CRUD",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "version": "1.0.0",
-    "description": "Collection updated to match DTOs and query params"
+    "version": "2.0.0",
+    "description": "Complete CRUD operations for all models"
   },
   "item": [
     {
-      "name": "Health",
+      "name": "Health Check",
       "request": {
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/health",
+          "raw": "{{baseUrl}}/v1/health",
           "host": ["{{baseUrl}}"],
-          "path": ["health"]
+          "path": ["v1", "health"]
         }
       }
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "List Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/categories?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "categories"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "parent_id", "value": "", "disabled": true}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Kue & Dessert\",\n  \"parent_id\": null,\n  \"image_url\": \"https://example.com/cake-category.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "categories"]
+            }
+          }
+        },
+        {
+          "name": "Get Category by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/categories/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "categories", ":id"],
+              "variable": [{"key": "id", "value": "1"}]
+            }
+          }
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Kue & Dessert Updated\",\n  \"image_url\": \"https://example.com/cake-category-new.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/categories/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "categories", ":id"],
+              "variable": [{"key": "id", "value": "1"}]
+            }
+          }
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/categories/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "categories", ":id"],
+              "variable": [{"key": "id", "value": "1"}]
+            }
+          }
+        }
+      ]
     },
     {
       "name": "Shops",
@@ -29,10 +110,12 @@
             "url": {
               "raw": "{{baseUrl}}/v1/shops?page=1&limit=10",
               "host": ["{{baseUrl}}"],
-              "path": ["v1","shops"],
+              "path": ["v1", "shops"],
               "query": [
-                { "key": "page", "value": "1" },
-                { "key": "limit", "value": "10" }
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "search", "value": "", "disabled": true},
+                {"key": "city", "value": "", "disabled": true}
               ]
             }
           }
@@ -41,17 +124,155 @@
           "name": "Create Shop",
           "request": {
             "method": "POST",
-            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "header": [{"key": "Content-Type", "value": "application/json"}],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"user_id\": 1,\n  \"name\": \"Toko Contoh\",\n  \"description\": \"Deskripsi toko contoh\",\n  \"phone\": \"081234567890\",\n  \"email\": \"owner@example.com\",\n  \"address\": \"Jl. Contoh No.1\",\n  \"city\": \"Jakarta\",\n  \"province\": \"DKI Jakarta\",\n  \"postal_code\": \"10110\"\n}"
+              "raw": "{\n  \"user_id\": 1,\n  \"name\": \"Toko Kue Bahagia\",\n  \"description\": \"Toko kue terbaik di Jakarta\",\n  \"phone\": \"081234567890\",\n  \"display_address\": \"Jl. Sudirman No. 123\",\n  \"photo\": \"https://example.com/shop-photo.jpg\"\n}"
             },
-            "url": { "raw": "{{baseUrl}}/v1/shops", "host": ["{{baseUrl}}"], "path": ["v1","shops"] }
+            "url": {
+              "raw": "{{baseUrl}}/v1/shops",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "shops"]
+            }
           }
         },
         {
           "name": "Get Shop by ID",
-          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/v1/shops/:id", "host": ["{{baseUrl}}"], "path": ["v1","shops",":id"] } }
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/shops/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "shops", ":id"],
+              "variable": [{"key": "id", "value": "1"}]
+            }
+          }
+        },
+        {
+          "name": "Update Shop",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Toko Kue Bahagia Updated\",\n  \"description\": \"Toko kue terbaik di Indonesia\",\n  \"phone\": \"081234567891\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/shops/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "shops", ":id"],
+              "variable": [{"key": "id", "value": "1"}]
+            }
+          }
+        },
+        {
+          "name": "Delete Shop",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/shops/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "shops", ":id"],
+              "variable": [{"key": "id", "value": "1"}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Shop Addresses",
+      "item": [
+        {
+          "name": "List Shop Addresses",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/shop-addresses?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "shop-addresses"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "shop_id", "value": "", "disabled": true},
+                {"key": "city", "value": "", "disabled": true}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Shop Address",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shop_id\": 1,\n  \"working_hours\": \"09:00 - 21:00\",\n  \"is_open\": true,\n  \"address\": \"Jl. Sudirman No. 123\",\n  \"address_description\": \"Dekat Mall Central Park\",\n  \"city\": \"Jakarta\",\n  \"postal_code\": \"10110\",\n  \"lat\": \"-6.208763\",\n  \"lng\": \"106.845599\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/shop-addresses",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "shop-addresses"]
+            }
+          }
+        },
+        {
+          "name": "Get Shop Address by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/shop-addresses/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "shop-addresses", ":id"],
+              "variable": [{"key": "id", "value": "uuid-here"}]
+            }
+          }
+        },
+        {
+          "name": "Get Shop Address by Shop ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/shop-addresses/shop/:shopId",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "shop-addresses", "shop", ":shopId"],
+              "variable": [{"key": "shopId", "value": "1"}]
+            }
+          }
+        },
+        {
+          "name": "Update Shop Address",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"working_hours\": \"08:00 - 22:00\",\n  \"is_open\": false,\n  \"address\": \"Jl. Sudirman No. 456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/shop-addresses/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "shop-addresses", ":id"],
+              "variable": [{"key": "id", "value": "uuid-here"}]
+            }
+          }
+        },
+        {
+          "name": "Delete Shop Address",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/shop-addresses/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "shop-addresses", ":id"],
+              "variable": [{"key": "id", "value": "uuid-here"}]
+            }
+          }
         }
       ]
     },
@@ -63,50 +284,472 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": { "raw": "{{baseUrl}}/v1/gifts?page=1&limit=10", "host": ["{{baseUrl}}"], "path": ["v1","gifts"], "query": [ { "key": "page", "value": "1" }, { "key": "limit", "value": "10" } ] }
+            "url": {
+              "raw": "{{baseUrl}}/v1/gifts?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gifts"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "shop_id", "value": "", "disabled": true},
+                {"key": "category_id", "value": "", "disabled": true},
+                {"key": "search", "value": "", "disabled": true}
+              ]
+            }
           }
         },
         {
           "name": "Create Gift",
           "request": {
             "method": "POST",
-            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "header": [{"key": "Content-Type", "value": "application/json"}],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"shop_id\": 1,\n  \"category_id\": 1,\n  \"name\": \"Kue Ulang Tahun\",\n  \"description\": \"Kue cokelat ukuran sedang\",\n  \"price\": 150000.00,\n  \"stock\": 10,\n  \"min_order\": 1\n}"
+              "raw": "{\n  \"shop_id\": 1,\n  \"category_id\": 1,\n  \"name\": \"Kue Ulang Tahun Cokelat\",\n  \"description\": \"Kue cokelat lembut dengan krim vanilla\",\n  \"price\": 150000,\n  \"stock\": 10,\n  \"min_order\": 1,\n  \"max_order\": 5,\n  \"weight\": 1000,\n  \"status\": \"active\"\n}"
             },
-            "url": { "raw": "{{baseUrl}}/v1/gifts", "host": ["{{baseUrl}}"], "path": ["v1","gifts"] }
+            "url": {
+              "raw": "{{baseUrl}}/v1/gifts",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gifts"]
+            }
           }
         },
         {
           "name": "Get Gift by ID",
-          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/v1/gifts/:id", "host": ["{{baseUrl}}"], "path": ["v1","gifts",":id"] } }
-        },
-        {
-          "name": "Add Gift Image",
           "request": {
-            "method": "POST",
-            "header": [ { "key": "Content-Type", "value": "application/json" } ],
-            "body": { "mode": "raw", "raw": "{\n  \"gift_id\": 1,\n  \"image_url\": \"https://example.com/kue.jpg\",\n  \"is_primary\": true\n}\n" },
-            "url": { "raw": "{{baseUrl}}/v1/gifts/images", "host": ["{{baseUrl}}"], "path": ["v1","gifts","images"] }
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/gifts/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gifts", ":id"],
+              "variable": [{"key": "id", "value": "1"}]
+            }
           }
         },
         {
-          "name": "Add Gift Review",
+          "name": "Update Gift",
           "request": {
-            "method": "POST",
-            "header": [ { "key": "Content-Type", "value": "application/json" } ],
-            "body": { "mode": "raw", "raw": "{\n  \"gift_id\": 1,\n  \"rating\": 5,\n  \"review_text\": \"Mantap kualitasnya\"\n}\n" },
-            "url": { "raw": "{{baseUrl}}/v1/gifts/reviews", "host": ["{{baseUrl}}"], "path": ["v1","gifts","reviews"] }
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Kue Ulang Tahun Cokelat Premium\",\n  \"price\": 175000,\n  \"stock\": 8\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/gifts/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gifts", ":id"],
+              "variable": [{"key": "id", "value": "1"}]
+            }
           }
         },
         {
-          "name": "Add Gift Specification",
+          "name": "Delete Gift",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/gifts/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gifts", ":id"],
+              "variable": [{"key": "id", "value": "1"}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gift Images",
+      "item": [
+        {
+          "name": "List Gift Images",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/gift-images?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gift-images"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "gift_id", "value": "", "disabled": true}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Gift Image",
           "request": {
             "method": "POST",
-            "header": [ { "key": "Content-Type", "value": "application/json" } ],
-            "body": { "mode": "raw", "raw": "{\n  \"gift_id\": 1,\n  \"name\": \"Berat\",\n  \"value\": \"500\",\n  \"unit\": \"gram\"\n}\n" },
-            "url": { "raw": "{{baseUrl}}/v1/gifts/specifications", "host": ["{{baseUrl}}"], "path": ["v1","gifts","specifications"] }
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"gift_id\": 1,\n  \"url\": \"https://example.com/cake-image.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/gift-images",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gift-images"]
+            }
+          }
+        },
+        {
+          "name": "Get Gift Image by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/gift-images/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gift-images", ":id"],
+              "variable": [{"key": "id", "value": "uuid-here"}]
+            }
+          }
+        },
+        {
+          "name": "Get Gift Images by Gift ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/gift-images/gift/:giftId",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gift-images", "gift", ":giftId"],
+              "variable": [{"key": "giftId", "value": "1"}]
+            }
+          }
+        },
+        {
+          "name": "Update Gift Image",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://example.com/cake-image-updated.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/gift-images/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gift-images", ":id"],
+              "variable": [{"key": "id", "value": "uuid-here"}]
+            }
+          }
+        },
+        {
+          "name": "Delete Gift Image",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/gift-images/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gift-images", ":id"],
+              "variable": [{"key": "id", "value": "uuid-here"}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gift Reviews",
+      "item": [
+        {
+          "name": "List Gift Reviews",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/gift-reviews?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gift-reviews"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "gift_id", "value": "", "disabled": true},
+                {"key": "rating", "value": "", "disabled": true}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Gift Review",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"gift_id\": 1,\n  \"user_id\": 123,\n  \"display_name\": \"John Doe\",\n  \"message\": \"Kue nya enak banget! Highly recommended!\",\n  \"rating\": 5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/gift-reviews",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gift-reviews"]
+            }
+          }
+        },
+        {
+          "name": "Get Gift Review by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/gift-reviews/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gift-reviews", ":id"],
+              "variable": [{"key": "id", "value": "uuid-here"}]
+            }
+          }
+        },
+        {
+          "name": "Get Gift Reviews by Gift ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/gift-reviews/gift/:giftId?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gift-reviews", "gift", ":giftId"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"}
+              ],
+              "variable": [{"key": "giftId", "value": "1"}]
+            }
+          }
+        },
+        {
+          "name": "Get Gift Rating Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/gift-reviews/gift/:giftId/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gift-reviews", "gift", ":giftId", "stats"],
+              "variable": [{"key": "giftId", "value": "1"}]
+            }
+          }
+        },
+        {
+          "name": "Update Gift Review",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"Kue nya enak banget! Updated review!\",\n  \"rating\": 4\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/gift-reviews/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gift-reviews", ":id"],
+              "variable": [{"key": "id", "value": "uuid-here"}]
+            }
+          }
+        },
+        {
+          "name": "Delete Gift Review",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/gift-reviews/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gift-reviews", ":id"],
+              "variable": [{"key": "id", "value": "uuid-here"}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gift Specifications",
+      "item": [
+        {
+          "name": "List Gift Specifications",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/gift-specifications?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gift-specifications"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "gift_id", "value": "", "disabled": true},
+                {"key": "key", "value": "", "disabled": true}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Gift Specification",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"gift_id\": 1,\n  \"key\": \"Bahan\",\n  \"value\": \"Tepung terigu, telur, cokelat, mentega\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/gift-specifications",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gift-specifications"]
+            }
+          }
+        },
+        {
+          "name": "Get Gift Specification by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/gift-specifications/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gift-specifications", ":id"],
+              "variable": [{"key": "id", "value": "uuid-here"}]
+            }
+          }
+        },
+        {
+          "name": "Get Gift Specifications by Gift ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/gift-specifications/gift/:giftId",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gift-specifications", "gift", ":giftId"],
+              "variable": [{"key": "giftId", "value": "1"}]
+            }
+          }
+        },
+        {
+          "name": "Update Gift Specification",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"key\": \"Bahan Utama\",\n  \"value\": \"Tepung terigu premium, telur segar, cokelat Belgium\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/gift-specifications/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gift-specifications", ":id"],
+              "variable": [{"key": "id", "value": "uuid-here"}]
+            }
+          }
+        },
+        {
+          "name": "Delete Gift Specification",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/gift-specifications/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gift-specifications", ":id"],
+              "variable": [{"key": "id", "value": "uuid-here"}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gift Variants",
+      "item": [
+        {
+          "name": "List Gift Variants",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/gift-variants?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gift-variants"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "gift_id", "value": "", "disabled": true}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Gift Variant",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"gift_id\": 1,\n  \"variant_key1\": \"Size\",\n  \"variant_value1\": \"Medium\",\n  \"variant_key2\": \"Flavor\",\n  \"variant_value2\": \"Chocolate\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/gift-variants",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gift-variants"]
+            }
+          }
+        },
+        {
+          "name": "Get Gift Variant by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/gift-variants/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gift-variants", ":id"],
+              "variable": [{"key": "id", "value": "1"}]
+            }
+          }
+        },
+        {
+          "name": "Get Gift Variants by Gift ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/gift-variants/gift/:giftId",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gift-variants", "gift", ":giftId"],
+              "variable": [{"key": "giftId", "value": "1"}]
+            }
+          }
+        },
+        {
+          "name": "Update Gift Variant",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"variant_value1\": \"Large\",\n  \"variant_value2\": \"Vanilla\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/gift-variants/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gift-variants", ":id"],
+              "variable": [{"key": "id", "value": "1"}]
+            }
+          }
+        },
+        {
+          "name": "Delete Gift Variant",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/gift-variants/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "gift-variants", ":id"],
+              "variable": [{"key": "id", "value": "1"}]
+            }
           }
         }
       ]
@@ -115,20 +758,89 @@
       "name": "Orders",
       "item": [
         {
+          "name": "List Orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/orders?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "orders"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"},
+                {"key": "shop_id", "value": "", "disabled": true}
+              ]
+            }
+          }
+        },
+        {
           "name": "Create Order",
           "request": {
             "method": "POST",
-            "header": [ { "key": "Content-Type", "value": "application/json" } ],
-            "body": { "mode": "raw", "raw": "{\n  \"order_group_id\": 1,\n  \"shop_id\": 1,\n  \"order_status\": \"pending\",\n  \"total_amount\": 150000.00,\n  \"grand_total\": 165000.00,\n  \"items\": [ { \"gift_id\": 1, \"quantity\": 1, \"total_price\": 150000.00 } ]\n}\n" },
-            "url": { "raw": "{{baseUrl}}/v1/orders", "host": ["{{baseUrl}}"], "path": ["v1","orders"] }
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderGroup\": {\n    \"buyer_id\": 123,\n    \"receiver_name\": \"Jane Doe\",\n    \"receiver_phone\": \"081234567890\",\n    \"shipping_address\": \"Jl. Kemang Raya No. 45\",\n    \"shipping_city\": \"Jakarta\",\n    \"subtotal\": 150000,\n    \"grand_total\": 165000,\n    \"shipping_cost\": 15000\n  },\n  \"orders\": [\n    {\n      \"shop_id\": \"1\",\n      \"confirmation_deadline\": \"2025-08-27T12:00:00.000Z\",\n      \"date_ordered_for\": \"2025-08-28T10:00:00.000Z\",\n      \"items\": [\n        {\n          \"gift_id\": 1,\n          \"name\": \"Kue Ulang Tahun\",\n          \"price\": 150000,\n          \"qty\": 1,\n          \"photo\": \"https://example.com/cake.jpg\"\n        }\n      ]\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "orders"]
+            }
           }
         },
         {
           "name": "Get Order by ID",
-          "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/v1/orders/:id", "host": ["{{baseUrl}}"], "path": ["v1","orders",":id"] } }
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/orders/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "orders", ":id"],
+              "variable": [{"key": "id", "value": "ORDER123"}]
+            }
+          }
+        },
+        {
+          "name": "Update Order",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"confirmation_deadline\": \"2025-08-28T12:00:00.000Z\",\n  \"date_ordered_for\": \"2025-08-29T10:00:00.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/orders/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "orders", ":id"],
+              "variable": [{"key": "id", "value": "ORDER123"}]
+            }
+          }
+        },
+        {
+          "name": "Delete Order",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/orders/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "orders", ":id"],
+              "variable": [{"key": "id", "value": "ORDER123"}]
+            }
+          }
         }
       ]
     }
   ],
-  "variable": [ { "key": "baseUrl", "value": "http://localhost:3000", "type": "string" } ]
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    }
+  ]
 }

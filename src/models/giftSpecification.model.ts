@@ -71,6 +71,10 @@ GiftSpecification.init(
     tableName: 'gift__specifications',
     timestamps: true,
     paranoid: true, // supaya deletedAt dipakai untuk soft delete
+    underscored: false,
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
+    deletedAt: "deletedAt",
   }
 );
 

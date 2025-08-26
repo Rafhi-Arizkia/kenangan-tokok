@@ -11,6 +11,9 @@ export interface OrderAttributes {
   date_ordered_for: Date;
   shop_id: string;
   order_group_id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date | null;
 }
 
 export interface OrderCreationAttributes
@@ -32,6 +35,9 @@ export class OrderModel
   public date_ordered_for!: Date;
   public shop_id!: string;
   public order_group_id!: number;
+  public createdAt!: Date;
+  public updatedAt!: Date;
+  public deletedAt!: Date | null;
 
   // associations
   public static associate(models: any) {
@@ -100,11 +106,30 @@ OrderModel.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   },
   {
     sequelize,
+    underscored: false,
     modelName: "Order",
     tableName: "order",
-    timestamps: false, // kalau tabel tidak ada created_at, updated_at
+    timestamps: true,
+    paranoid: true,
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
+    deletedAt: "deletedAt",
   }
 );

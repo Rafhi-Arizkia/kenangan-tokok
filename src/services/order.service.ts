@@ -40,7 +40,7 @@ export class OrderService {
       order_status,
       date_from,
       date_to,
-      sort_by = "created_at",
+      sort_by = "createdAt",
       sort_order = "DESC",
     } = queryParams;
 
@@ -72,7 +72,7 @@ export class OrderService {
       const dateCondition: any = {};
       if (date_from) dateCondition[Op.gte] = new Date(date_from);
       if (date_to) dateCondition[Op.lte] = new Date(date_to);
-      whereCondition.created_at = dateCondition;
+      whereCondition.createdAt = dateCondition;
     }
 
     const { count, rows } = await OrderModel.findAndCountAll({
@@ -84,7 +84,7 @@ export class OrderService {
       ],
       offset,
       limit,
-      order: [[sort_by, sort_order]],
+      // order: [[sort_by, sort_order]],
     });
 
     return {
@@ -128,12 +128,17 @@ export class OrderService {
       // Fetch user and recipient details
       const buyer = await UserClient.fetchUserDetails(orderGroupData.buyer_id);
       let recipient = null;
-      
+
       if (orderGroupData.receiver_id) {
         try {
-          recipient = await RecipientClient.fetchRecipientDetails(orderGroupData.receiver_id);
+          recipient = await RecipientClient.fetchRecipientDetails(
+            orderGroupData.receiver_id
+          );
         } catch (error) {
-          console.warn(`Could not fetch recipient details for ID ${orderGroupData.receiver_id}:`, error);
+          console.warn(
+            `Could not fetch recipient details for ID ${orderGroupData.receiver_id}:`,
+            error
+          );
         }
       }
 
@@ -154,7 +159,7 @@ export class OrderService {
       const shopIds: number[] = Array.from(
         new Set(orderGroupData.orders.map((o: SingleOrderDTO) => o.shopId))
       );
-      
+
       const productIds: number[] = [];
       for (const order of orderGroupData.orders) {
         for (const item of order.package.items) {
@@ -168,8 +173,8 @@ export class OrderService {
         include: [
           {
             model: ShopAddressModel,
-            as: 'addresses'
-          }
+            as: "addresses",
+          },
         ],
         transaction: t,
       });
@@ -198,48 +203,48 @@ export class OrderService {
         if (orderResult) {
           results.push({
             data: orderResult,
-            order: orderRequest
+            order: orderRequest,
           });
         }
       }
 
       if (errors.length > 0) {
         await t.rollback();
-        const responseData = errors.map(e => ({
+        const responseData = errors.map((e) => ({
           message: e.data,
           orderDetail: e.order,
-          orderGroupId: orderGroup.id
+          orderGroupId: orderGroup.id,
         }));
-        
+
         return {
           statusCode: 400,
           errors: responseData,
           orderGroup: null,
-          orders: []
+          orders: [],
         };
       }
 
       await t.commit();
-      
-      const responseData = results.map(e => ({
+
+      const responseData = results.map((e) => ({
         message: "Order created successfully",
         orderDetail: e.order,
         orderGroupId: orderGroup.id,
-        orderId: e.data.id
+        orderId: e.data.id,
       }));
 
       return {
         statusCode: 201,
         errors: [],
         orderGroup,
-        orders: results.map(r => r.data),
-        response: responseData
+        orders: results.map((r) => r.data),
+        response: responseData,
       };
-
     } catch (error) {
       await t.rollback();
       console.error("Error creating orders:", error);
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
       throw new Error(`Failed to create orders: ${errorMessage}`);
     }
   }
@@ -258,7 +263,7 @@ export class OrderService {
     const errors: any[] = [];
 
     // Find shop
-    const shop = shops.find(s => (s as any).id === orderRequest.shopId);
+    const shop = shops.find((s) => (s as any).id === orderRequest.shopId);
     if (!shop) {
       errors.push({
         error: true,
@@ -273,7 +278,9 @@ export class OrderService {
     if (addresses.length === 0) {
       errors.push({
         error: true,
-        data: `Shop ${(shop as any).name} has no address. We can't deliver from a shop without address.`,
+        data: `Shop ${
+          (shop as any).name
+        } has no address. We can't deliver from a shop without address.`,
         order: orderRequest,
       });
       return [errors, null];
@@ -292,12 +299,12 @@ export class OrderService {
     const acceptedProducts: any[] = [];
 
     for (const item of orderRequest.package.items) {
-      const product = gifts.find(g => (g as any).id === item.id);
-      
+      const product = gifts.find((g) => (g as any).id === item.id);
+
       if (!product) {
         badProducts.push({
           id: item.id,
-          data: "Product not found"
+          data: "Product not found",
         });
         continue;
       }
@@ -306,7 +313,7 @@ export class OrderService {
       if (String(productShopId) !== String(orderRequest.shopId)) {
         badProducts.push({
           id: item.id,
-          data: `Product has mismatched shop id. Expected ${orderRequest.shopId} but got ${productShopId}`
+          data: `Product has mismatched shop id. Expected ${orderRequest.shopId} but got ${productShopId}`,
         });
         continue;
       }
@@ -323,13 +330,13 @@ export class OrderService {
       const vendorFee = (price * qty * feePercent) / 100;
 
       acceptedProducts.push({
-        order_id: '', // Will be set later
+        order_id: "", // Will be set later
         name: (product as any).name,
         price: price,
         vendor_fee: vendorFee,
         qty: qty,
         note: item.note || null,
-        photo: (product as any).photo || '',
+        photo: (product as any).photo || "",
         gift_id: (product as any).id,
       });
     }
@@ -340,7 +347,7 @@ export class OrderService {
         error: true,
         data: "There are several invalid products",
         order: orderRequest,
-        extra: badProducts
+        extra: badProducts,
       });
       return [errors, null];
     }
@@ -387,7 +394,7 @@ export class OrderService {
     if (!orderInstance) {
       errors.push({
         error: true,
-        data: 'Failed creating a new order',
+        data: "Failed creating a new order",
         order: orderRequest,
       });
       return [errors, null];
@@ -403,8 +410,14 @@ export class OrderService {
         sender_phone: (shop as any).phone,
         origin_lat: senderAddress.lat,
         origin_lng: senderAddress.lng,
-        origin_address: [senderAddress.address, senderAddress.kelurahan, senderAddress.kecamatan, senderAddress.city]
-          .filter(Boolean).join(", "),
+        origin_address: [
+          senderAddress.address,
+          senderAddress.kelurahan,
+          senderAddress.kecamatan,
+          senderAddress.city,
+        ]
+          .filter(Boolean)
+          .join(", "),
         origin_description: senderAddress.address_description,
         origin_area: Number(senderAddress.area_id) || 0,
         dest_lat: destLat,
@@ -435,7 +448,7 @@ export class OrderService {
     for (const product of acceptedProducts) {
       product.order_id = (orderInstance as any).id;
     }
-    
+
     await OrderItemModel.bulkCreate(acceptedProducts as any[], {
       transaction: t,
     });
@@ -532,7 +545,7 @@ export class OrderService {
     const orderStatus = await OrderStatusModel.create({
       order_id: orderId,
       status_name_id: statusNameId,
-      description: description
+      description: description,
     });
 
     return orderStatus;
@@ -541,7 +554,7 @@ export class OrderService {
   async getOrderStatuses(orderId: string) {
     const statuses = await OrderStatusModel.findAll({
       where: { order_id: orderId },
-      order: [["created_at", "DESC"]],
+      order: [["id", "DESC"]],
     });
     return statuses;
   }
@@ -553,7 +566,8 @@ export class OrderService {
         { model: OrderGroupModel, as: "orderGroup" },
         { model: OrderItemModel, as: "items" },
       ],
-      order: [["created_at", "DESC"]],
+      // order by date_ordered_for since this table doesn't have created_at timestamps
+      order: [["date_ordered_for", "DESC"]],
     });
     return orders;
   }

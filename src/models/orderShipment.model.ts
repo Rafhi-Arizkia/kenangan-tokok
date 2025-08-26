@@ -227,10 +227,14 @@ OrderShipmentModel.init(
   },
   {
     sequelize,
+    underscored: false,
     modelName: 'OrderShipment',
     tableName: 'order_shipment',
     timestamps: true,
     paranoid: true,
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
+    deletedAt: "deletedAt",
   }
 );
 

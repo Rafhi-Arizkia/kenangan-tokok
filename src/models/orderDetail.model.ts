@@ -10,8 +10,6 @@ export interface OrderDetailAttributes {
   external_id: string;
   shop_id: number;
   order_id: string;
-  wallet_id: number;
-  cartItem_id: string;
   amount: number;
   createdAt: Date;
   updatedAt: Date;
@@ -32,8 +30,6 @@ export class OrderDetailModel
   public external_id!: string;
   public shop_id!: number;
   public order_id!: string;
-  public wallet_id!: number;
-  public cartItem_id!: string;
   public amount!: number;
   public createdAt!: Date;
   public updatedAt!: Date;
@@ -60,14 +56,6 @@ OrderDetailModel.init(
       type: DataTypes.STRING(8),
       allowNull: false,
     },
-    wallet_id: {
-      type: DataTypes.BIGINT,
-      allowNull: false,
-    },
-    cartItem_id: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     amount: {
       type: DataTypes.BIGINT,
       allowNull: false,
@@ -91,6 +79,7 @@ OrderDetailModel.init(
     tableName: "order_detail",
     timestamps: true,
     paranoid: true,
+    underscored: false,
     createdAt: "createdAt",
     updatedAt: "updatedAt",
     deletedAt: "deletedAt",

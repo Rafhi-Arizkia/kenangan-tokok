@@ -104,6 +104,10 @@ GiftReview.init(
     tableName: 'gift__reviews',
     timestamps: true,
     paranoid: true, // supaya Sequelize handle deletedAt otomatis
+    underscored: false,
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
+    deletedAt: "deletedAt",
   }
 );
 
