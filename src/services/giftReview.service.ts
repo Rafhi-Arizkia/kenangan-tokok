@@ -6,7 +6,15 @@ import { paginationHelper } from "../utils/response";
 import { WhereOptions } from "sequelize";
 
 export class GiftReviewService {
-  async getAllGiftReviews(queryParams: GiftReviewQueryDTO) {
+  async getAllGiftReviews(queryParams: GiftReviewQueryDTO): Promise<{
+    reviews: GiftReviewModel[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+  }> {
     const { page = 1, limit = 10, gift_id, user_id, rating, ...filters } = queryParams;
     
     const whereClause: WhereOptions = {};
@@ -57,7 +65,7 @@ export class GiftReviewService {
     };
   }
 
-  async getGiftReviewById(id: string) {
+  async getGiftReviewById(id: string): Promise<GiftReviewModel> {
     const review = await GiftReviewModel.findByPk(id, {
       include: [
         {
@@ -78,7 +86,15 @@ export class GiftReviewService {
     return review;
   }
 
-  async getGiftReviewsByGiftId(giftId: number, page: number = 1, limit: number = 10) {
+  async getGiftReviewsByGiftId(giftId: number, page: number = 1, limit: number = 10): Promise<{
+    reviews: GiftReviewModel[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+  }> {
     const { count, rows } = await GiftReviewModel.findAndCountAll({
       where: { gift_id: giftId },
       include: [
@@ -101,7 +117,7 @@ export class GiftReviewService {
     };
   }
 
-  async createGiftReview(reviewData: CreateGiftReviewDTO) {
+  async createGiftReview(reviewData: CreateGiftReviewDTO): Promise<GiftReviewModel> {
     // Check if gift exists
     const gift = await GiftModel.findByPk(reviewData.gift_id);
     if (!gift) {
@@ -117,7 +133,7 @@ export class GiftReviewService {
     return review;
   }
 
-  async updateGiftReview(id: string, reviewData: UpdateGiftReviewDTO) {
+  async updateGiftReview(id: string, reviewData: UpdateGiftReviewDTO): Promise<GiftReviewModel> {
     const review = await GiftReviewModel.findByPk(id);
     if (!review) {
       throw new Error("Gift review not found");
@@ -132,7 +148,7 @@ export class GiftReviewService {
     return review;
   }
 
-  async deleteGiftReview(id: string) {
+  async deleteGiftReview(id: string): Promise<{ message: string }> {
     const review = await GiftReviewModel.findByPk(id);
     if (!review) {
       throw new Error("Gift review not found");
@@ -142,7 +158,11 @@ export class GiftReviewService {
     return { message: "Gift review deleted successfully" };
   }
 
-  async getGiftRatingStats(giftId: number) {
+  async getGiftRatingStats(giftId: number): Promise<{
+    averageRating: number;
+    totalReviews: number;
+    ratingDistribution: Record<number, number>;
+  }> {
     const reviews = await GiftReviewModel.findAll({
       where: { gift_id: giftId },
       attributes: ['rating']

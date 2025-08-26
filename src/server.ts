@@ -19,6 +19,7 @@ const server = fastify({
       removeAdditional: true,
       useDefaults: true,
       coerceTypes: true,
+      allowUnionTypes: true,
     },
   },
   // Request logging is moved to fastify hook

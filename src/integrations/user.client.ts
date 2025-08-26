@@ -1,14 +1,24 @@
 import axios from "axios";
 
+const BASE_URL = process.env.USER_SERVICE_URL || "http://localhost:7779";
+const axiosInstance = axios.create({ baseURL: BASE_URL, timeout: 3000 });
+
 export class UserClient {
-  static async fetchUserDetails(userId: number) {
-    const url = `http://0.0.0.0:7779/api-mobile/v3/profile/me`;
-    // ubah ke axios
-    const response = await axios.get(url);
-    if (response.status !== 200) {
-      throw new Error("Failed to fetch user details");
+  static async fetchUserDetails(userId: number): Promise<UserDetail> {
+    // Use a sensible default endpoint; keep path configurable via env when needed.
+    const url = `/api-mobile/v3/profile/me`;
+    try {
+      const response = await axiosInstance.get(url);
+      if (response.status !== 200) {
+        throw new Error(`Failed to fetch user details: status ${response.status}`);
+      }
+      return response.data as UserDetail;
+    } catch (err: any) {
+      // Surface a short, informative error instead of letting the request hang.
+      const msg = err?.message || "Unknown error fetching user details";
+      console.warn(`UserClient.fetchUserDetails failed for userId=${userId}:`, msg);
+      throw new Error(msg);
     }
-    return response.data.data as Promise<UserDetail>;
   }
 }
 

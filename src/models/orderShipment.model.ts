@@ -12,11 +12,17 @@ export interface OrderShipmentAttributes {
   origin_address: string;
   origin_description?: string;
   origin_area: number;
+  origin_postal_code: string;
+  origin_area_id: number;
+  origin_suburb_id: number;
   dest_lat: string;
   dest_lng: string;
   dest_address: string;
   dest_description?: string;
   dest_area: number;
+  dest_postal_code: string;
+  dest_area_id: number;
+  dest_suburb_id: number;
   rate_id: number;
   use_insurance: boolean;
   package_heigth: number;
@@ -53,11 +59,17 @@ export class OrderShipmentModel
   public origin_address!: string;
   public origin_description?: string;
   public origin_area!: number;
+  public origin_postal_code!: string;
+  public origin_area_id!: number;
+  public origin_suburb_id!: number;
   public dest_lat!: string;
   public dest_lng!: string;
   public dest_address!: string;
   public dest_description?: string;
   public dest_area!: number;
+  public dest_postal_code!: string;
+  public dest_area_id!: number;
+  public dest_suburb_id!: number;
   public rate_id!: number;
   public use_insurance!: boolean;
   public package_heigth!: number;
@@ -129,6 +141,18 @@ OrderShipmentModel.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    origin_postal_code: {
+      type: DataTypes.STRING(10),
+      allowNull: false,
+    },
+    origin_area_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    origin_suburb_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     dest_lat: {
       type: DataTypes.STRING(20),
       allowNull: false,
@@ -146,6 +170,18 @@ OrderShipmentModel.init(
       allowNull: true,
     },
     dest_area: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    dest_postal_code: {
+      type: DataTypes.STRING(10),
+      allowNull: false,
+    },
+    dest_area_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    dest_suburb_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },

@@ -7,8 +7,6 @@ import {
   updateOrderSchema,
   deleteOrderSchema,
   getOrdersByShopIdSchema,
-  createOrderGroupSchema,
-  getOrderGroupByIdSchema,
   addOrderItemSchema,
   getOrderItemsSchema,
   createOrderShipmentSchema,
@@ -51,16 +49,6 @@ async function orderRoutes(fastify: FastifyInstance, options: FastifyPluginOptio
     schema: getOrdersByShopIdSchema,
   }, orderController.getOrdersByShopId.bind(orderController));
 
-  // Order Group routes
-  // POST /api/orders/groups - Create new order group
-  fastify.post('/groups', {
-    schema: createOrderGroupSchema,
-  }, orderController.createOrderGroup.bind(orderController));
-
-  // GET /api/orders/groups/:id - Get order group by ID
-  fastify.get('/groups/:id', {
-    schema: getOrderGroupByIdSchema,
-  }, orderController.getOrderGroupById.bind(orderController));
 
   // Order Item routes
   // POST /api/orders/items - Add order item

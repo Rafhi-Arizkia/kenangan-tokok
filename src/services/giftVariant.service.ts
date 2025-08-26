@@ -5,7 +5,15 @@ import { paginationHelper } from "../utils/response";
 import { WhereOptions, Op } from "sequelize";
 
 export class GiftVariantService {
-  async getAllGiftVariants(queryParams: GiftVariantQueryDTO) {
+  async getAllGiftVariants(queryParams: GiftVariantQueryDTO): Promise<{
+    variants: GiftVariantModel[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+  }> {
     const { page = 1, limit = 10, gift_id, variant_key1, variant_key2, ...filters } = queryParams;
     
     const whereClause: WhereOptions = {};
@@ -55,7 +63,7 @@ export class GiftVariantService {
     };
   }
 
-  async getGiftVariantById(id: number) {
+  async getGiftVariantById(id: number): Promise<GiftVariantModel> {
     const variant = await GiftVariantModel.findByPk(id, {
       include: [
         {
@@ -71,7 +79,7 @@ export class GiftVariantService {
     return variant;
   }
 
-  async getGiftVariantsByGiftId(giftId: number) {
+  async getGiftVariantsByGiftId(giftId: number): Promise<GiftVariantModel[]> {
     const variants = await GiftVariantModel.findAll({
       where: { gift_id: giftId },
       order: [['variant_key1', 'ASC'], ['variant_key2', 'ASC']]
@@ -79,7 +87,7 @@ export class GiftVariantService {
     return variants;
   }
 
-  async createGiftVariant(variantData: CreateGiftVariantDTO) {
+  async createGiftVariant(variantData: CreateGiftVariantDTO): Promise<GiftVariantModel> {
     // Check if gift exists
     if (variantData.gift_id) {
       const gift = await GiftModel.findByPk(variantData.gift_id);
@@ -114,7 +122,7 @@ export class GiftVariantService {
     return variant;
   }
 
-  async updateGiftVariant(id: number, variantData: UpdateGiftVariantDTO) {
+  async updateGiftVariant(id: number, variantData: UpdateGiftVariantDTO): Promise<GiftVariantModel> {
     const variant = await GiftVariantModel.findByPk(id);
     if (!variant) {
       throw new Error("Gift variant not found");
@@ -150,7 +158,7 @@ export class GiftVariantService {
     return variant;
   }
 
-  async deleteGiftVariant(id: number) {
+  async deleteGiftVariant(id: number): Promise<{ message: string }> {
     const variant = await GiftVariantModel.findByPk(id);
     if (!variant) {
       throw new Error("Gift variant not found");
@@ -160,7 +168,7 @@ export class GiftVariantService {
     return { message: "Gift variant deleted successfully" };
   }
 
-  async getVariantKeys(giftId?: number) {
+  async getVariantKeys(giftId?: number): Promise<string[]> {
     const whereClause: WhereOptions = {};
     if (giftId) {
       whereClause.gift_id = giftId;
@@ -183,7 +191,7 @@ export class GiftVariantService {
     return Array.from(keys);
   }
 
-  async getVariantValuesByKey(key: string, giftId?: number) {
+  async getVariantValuesByKey(key: string, giftId?: number): Promise<string[]> {
     const whereClause: WhereOptions = {};
     if (giftId) {
       whereClause.gift_id = giftId;

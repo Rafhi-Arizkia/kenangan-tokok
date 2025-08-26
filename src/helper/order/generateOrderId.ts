@@ -11,7 +11,8 @@ export default async function generateOrderId(): Promise<string> {
 
   const exists = await OrderModel.findByPk(res, { attributes: ['id'] });
   if (exists) {
-    return generateOrderId();
+  console.debug('[generateOrderId] collision - retrying', { candidate: res });
+  return generateOrderId();
   }
   return res;
 }

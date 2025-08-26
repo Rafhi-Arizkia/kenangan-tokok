@@ -74,48 +74,27 @@ export interface OrderQueryDTO {
 export interface OrderGroupDTO {
   id: number;
   receiver_id?: number;
-  sender_name?: string;
-  sender_phone?: string;
-  sender_email?: string;
-  receiver_name?: string;
-  receiver_phone?: string;
-  receiver_email?: string;
-  shipping_address?: string;
-  shipping_city?: string;
-  shipping_province?: string;
-  shipping_postal_code?: string;
-  total_amount: number;
-  total_discount?: number;
-  shipping_cost?: number;
-  tax_amount?: number;
-  grand_total: number;
-  payment_method?: string;
-  payment_status: string;
-  notes?: string;
+  is_gift: number;
+  is_surprise: number;
+  is_hidden: number;
+  reference_code: string;
+  payment_gateway_fee: number;
+  targeted_receiver_name?: string;
+  type_device: 'MOBILE' | 'WEB';
+  service_fee: number;
+  message?: string;
+  receiver_message?: string;
+  payment_status?: string;
   created_at: Date;
   updated_at: Date;
 }
 
 export interface CreateOrderGroupDTO {
   receiver_id?: number;
-  sender_name?: string;
-  sender_phone?: string;
-  sender_email?: string;
-  receiver_name?: string;
-  receiver_phone?: string;
-  receiver_email?: string;
-  shipping_address?: string;
-  shipping_city?: string;
-  shipping_province?: string;
-  shipping_postal_code?: string;
-  total_amount: number;
-  total_discount?: number;
-  shipping_cost?: number;
-  tax_amount?: number;
-  grand_total: number;
-  payment_method?: string;
-  payment_status?: string;
-  notes?: string;
+  is_gift?: 0 | 1;
+  is_hidden?: 0 | 1;
+  is_surprise?: 0 | 1;
+  orders: SingleOrderDTO[];
 }
 
 export interface OrderItemDTO {

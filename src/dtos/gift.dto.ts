@@ -32,6 +32,7 @@ export interface CreateGiftDTO {
   name: string;
   description?: string;
   price: number;
+  total_sold?: number;
   photo?: string;
   minimum_days?: number;
   is_available?: boolean;

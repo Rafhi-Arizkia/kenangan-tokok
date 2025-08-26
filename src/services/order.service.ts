@@ -9,28 +9,33 @@ import {
   ShopAddressModel,
   GiftModel,
 } from "../models/index";
-import { OrderAttributes } from "../models/order.model";
 import { sequelize } from "../database/connection";
 import {
   CreateOrderDTO,
   UpdateOrderDTO,
   OrderQueryDTO,
-  CreateOrderGroupDTO,
   CreateOrderItemDTO,
   CreateOrderShipmentDTO,
   UpdateOrderShipmentDTO,
   SingleOrderDTO,
 } from "../dtos/order.dto";
 import { paginationHelper } from "../utils/response";
-import { Op, Transaction, UUIDV4, WhereOptions } from "sequelize";
+import { Op, Transaction, WhereOptions } from "sequelize";
+import { v4 as uuidV4 } from "uuid";
 import generateOrderId from "../helper/order/generateOrderId";
-import { OrderItemCreationAttributes } from "../models/orderItem.model";
-import { OrderShipmentCreationAttributes } from "../models/orderShipment.model";
 import { UserClient } from "../integrations/user.client";
 import { RecipientClient } from "../integrations/recipient.client";
 
 export class OrderService {
-  async getAllOrders(queryParams: OrderQueryDTO) {
+  async getAllOrders(queryParams: OrderQueryDTO): Promise<{
+    orders: OrderModel[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+  }> {
     const {
       page = 1,
       limit = 10,
@@ -97,7 +102,7 @@ export class OrderService {
     };
   }
 
-  async getOrderById(id: string) {
+  async getOrderById(id: string): Promise<OrderModel> {
     const order = await OrderModel.findByPk(id, {
       include: [
         { model: OrderGroupModel, as: "orderGroup" },
@@ -114,7 +119,13 @@ export class OrderService {
     return order;
   }
 
-  async createOrder(orderGroupData: CreateOrderDTO) {
+  async createOrder(orderGroupData: CreateOrderDTO): Promise<{
+    statusCode: number;
+    errors: any[];
+    orderGroup: OrderGroupModel | null;
+    orders: OrderModel[];
+    response?: any[];
+  }> {
     if (
       !orderGroupData ||
       !Array.isArray(orderGroupData.orders) ||
@@ -126,34 +137,62 @@ export class OrderService {
     const t = await sequelize.transaction();
     try {
       // Fetch user and recipient details
+      
       const buyer = await UserClient.fetchUserDetails(orderGroupData.buyer_id);
+      
       let recipient = null;
 
       if (orderGroupData.receiver_id) {
         try {
+          
           recipient = await RecipientClient.fetchRecipientDetails(
             orderGroupData.receiver_id
           );
-        } catch (error) {
-          console.warn(
-            `Could not fetch recipient details for ID ${orderGroupData.receiver_id}:`,
-            error
-          );
-        }
+          
+  } catch (error) {
+  }
       }
 
       // Create order group
-      const orderGroup = await OrderGroupModel.create(
-        {
-          buyer_id: buyer.id,
-          receiver_id: orderGroupData.receiver_id ?? null,
-          is_gift: orderGroupData.is_gift ? 1 : 0,
-          is_surprise: orderGroupData.is_surprise ? 1 : 0,
-          is_hidden: orderGroupData.is_hidden ? 1 : 0,
-          reference_code: UUIDV4(),
-        } as any,
-        { transaction: t }
-      );
+      
+      // quick DB connectivity check before running the create (helps distinguish network/lock issues)
+      try {
+  const [dbCheck] = await sequelize.query("SELECT 1 as ok");
+      } catch (err) {
+        
+      }
+
+      // wrap create in a timeout so we can detect and log if it hangs
+      const createPayload = {
+        buyer_id: buyer.id,
+        receiver_id: orderGroupData.receiver_id ?? null,
+        is_gift: orderGroupData.is_gift ? 1 : 0,
+        is_surprise: orderGroupData.is_surprise ? 1 : 0,
+        is_hidden: orderGroupData.is_hidden ? 1 : 0,
+        reference_code: uuidV4(),
+      } as any;
+
+      let orderGroup: any = null;
+      try {
+        const createPromise = OrderGroupModel.create(createPayload, {
+          transaction: t,
+        });
+        orderGroup = await Promise.race([
+          createPromise,
+          new Promise((_, reject) =>
+            setTimeout(
+              () =>
+                reject(new Error("OrderGroup.create timeout after 10000ms")),
+              10000
+            )
+          ),
+        ]);
+        
+      } catch (err: any) {
+        
+        await t.rollback();
+        throw new Error(`Failed to create order group: ${err?.message || err}`);
+      }
 
       // Prepare shops and products used in all orders
       const shopIds: number[] = Array.from(
@@ -168,23 +207,27 @@ export class OrderService {
       }
 
       // Fetch shops with addresses
+      
       const shops = await ShopModel.findAll({
         where: { id: shopIds },
         include: [
           {
             model: ShopAddressModel,
-            as: "addresses",
+            // association defined as 'address' (hasOne), use that alias
+            as: "address",
           },
         ],
-        transaction: t,
       });
+      
 
+      
       const gifts = await GiftModel.findAll({
         where: { id: productIds },
-        transaction: t,
       });
+      
 
       // Process each order request
+      
       const results = [];
       const errors = [];
 
@@ -242,7 +285,6 @@ export class OrderService {
       };
     } catch (error) {
       await t.rollback();
-      console.error("Error creating orders:", error);
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error";
       throw new Error(`Failed to create orders: ${errorMessage}`);
@@ -255,15 +297,33 @@ export class OrderService {
   private async processOrderRequest(
     t: Transaction,
     orderGroupId: number,
-    shops: any[],
-    gifts: any[],
+    shops: ShopModel[],
+    gifts: GiftModel[],
     recipient: any,
     orderRequest: SingleOrderDTO
-  ): Promise<[any[], any]> {
+  ): Promise<[any[], OrderModel | null]> {
     const errors: any[] = [];
 
-    // Find shop
-    const shop = shops.find((s) => (s as any).id === orderRequest.shopId);
+    // Normalize Sequelize instances to plain objects (use .toJSON() or dataValues) to reliably access attributes
+    const normalize = (arr: any[]) =>
+      (arr || []).map((x: any) => {
+        try {
+          if (!x) return x;
+          if (typeof x.toJSON === 'function') return x.toJSON();
+          if (x.dataValues) return x.dataValues;
+          return x;
+        } catch (e) {
+          return x;
+        }
+      });
+
+    const shopsPlain = normalize(shops);
+    const giftsPlain = normalize(gifts);
+
+    
+
+    // Find shop (use string comparison to avoid number/string mismatch)
+    const shop = shopsPlain.find((s) => String(s?.id) === String(orderRequest.shopId));
     if (!shop) {
       errors.push({
         error: true,
@@ -273,9 +333,11 @@ export class OrderService {
       return [errors, null];
     }
 
-    // Check shop addresses
-    const addresses = (shop as any).addresses || [];
-    if (addresses.length === 0) {
+    const senderAddressRaw =
+      (shop as any).address ??
+      ((shop as any).addresses && (shop as any).addresses[0]) ??
+      null;
+    if (!senderAddressRaw) {
       errors.push({
         error: true,
         data: `Shop ${
@@ -286,7 +348,7 @@ export class OrderService {
       return [errors, null];
     }
 
-    const senderAddress = addresses[0];
+    const senderAddress = senderAddressRaw;
 
     // Calculate totals and validate products
     let totalWeight = 0;
@@ -299,7 +361,7 @@ export class OrderService {
     const acceptedProducts: any[] = [];
 
     for (const item of orderRequest.package.items) {
-      const product = gifts.find((g) => (g as any).id === item.id);
+      const product = giftsPlain.find((g) => String((g as any).id) === String(item.id));
 
       if (!product) {
         badProducts.push({
@@ -400,53 +462,63 @@ export class OrderService {
       return [errors, null];
     }
 
+  
+    // Determine created order id (use generated id as fallback)
+    const createdOrderId = (orderInstance as any).id || orderId;
+
     // Create shipment
-    await OrderShipmentModel.create(
-      {
-        order_id: (orderInstance as any).id,
-        receiver_name: receiverName,
-        receiver_phone: receiverPhone,
-        sender_name: (shop as any).name,
-        sender_phone: (shop as any).phone,
-        origin_lat: senderAddress.lat,
-        origin_lng: senderAddress.lng,
-        origin_address: [
-          senderAddress.address,
-          senderAddress.kelurahan,
-          senderAddress.kecamatan,
-          senderAddress.city,
-        ]
-          .filter(Boolean)
-          .join(", "),
-        origin_description: senderAddress.address_description,
-        origin_area: Number(senderAddress.area_id) || 0,
-        dest_lat: destLat,
-        dest_lng: destLng,
-        dest_address: destAddress,
-        dest_description: destDescription,
-        dest_area: Number(destArea) || 0,
-        rate_id: Number(orderRequest.shipment.rateId) || 0,
-        use_insurance: orderRequest.shipment.useInsurance || false,
-        package_heigth: totalHeight,
-        package_length: totalLength,
-        package_weight: totalWeight,
-        package_width: totalWidth,
-        package_type: orderRequest.package.type,
-        package_price: totalPrice.toString(),
-        delivery_logistic_name: orderRequest.shipment.logisticName,
-        delivery_method: orderRequest.shipment.method,
-        delivery_min_day: orderRequest.shipment.minDay,
-        delivery_max_day: orderRequest.shipment.maxDay,
-        delivery_price: orderRequest.shipment.price,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      } as any,
-      { transaction: t }
-    );
+    const shipmentDest: any = orderRequest.shipment?.dest || {};
+    const shipmentPayload: any = {
+      order_id: createdOrderId,
+      receiver_name: receiverName,
+      receiver_phone: receiverPhone,
+      sender_name: (shop as any).name,
+      sender_phone: (shop as any).phone,
+      origin_lat: senderAddress.lat || '',
+      origin_lng: senderAddress.lng || '',
+      origin_address: [
+        senderAddress.address,
+        senderAddress.kelurahan,
+        senderAddress.kecamatan,
+        senderAddress.city,
+      ]
+        .filter(Boolean)
+        .join(', '),
+      origin_description: senderAddress.address_description || null,
+      origin_area: Number(senderAddress.area_id) || 0,
+      origin_postal_code: (senderAddress as any).postal_code || '',
+      origin_area_id: Number((senderAddress as any).area_id) || 0,
+      origin_suburb_id: Number((senderAddress as any).suburb_id) || 0,
+      dest_lat: destLat || '',
+      dest_lng: destLng || '',
+      dest_address: destAddress || '',
+      dest_description: destDescription || null,
+      dest_area: Number(destArea) || 0,
+      dest_postal_code: (shipmentDest as any).postal_code || '',
+      dest_area_id: Number((shipmentDest as any).areaId || (shipmentDest as any).area_id) || 0,
+      dest_suburb_id: Number((shipmentDest as any).suburb_id || (shipmentDest as any).suburbId) || 0,
+      rate_id: Number(orderRequest.shipment.rateId) || 0,
+      use_insurance: orderRequest.shipment.useInsurance || false,
+      package_heigth: totalHeight || 0,
+      package_length: totalLength || 0,
+      package_weight: totalWeight || 0,
+      package_width: totalWidth || 0,
+      package_type: Number(orderRequest.package.type) || 0,
+      package_price: totalPrice.toString(),
+      delivery_logistic_name: orderRequest.shipment.logisticName || '',
+      delivery_method: orderRequest.shipment.method || '',
+      delivery_min_day: Number(orderRequest.shipment.minDay) || 0,
+      delivery_max_day: Number(orderRequest.shipment.maxDay) || 0,
+      delivery_price: Number(orderRequest.shipment.price) || 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    await OrderShipmentModel.create(shipmentPayload as any, { transaction: t });
 
     // Create order items
     for (const product of acceptedProducts) {
-      product.order_id = (orderInstance as any).id;
+      product.order_id = createdOrderId;
     }
 
     await OrderItemModel.bulkCreate(acceptedProducts as any[], {
@@ -456,7 +528,7 @@ export class OrderService {
     return [errors, orderInstance];
   }
 
-  async updateOrder(id: string, orderData: UpdateOrderDTO) {
+  async updateOrder(id: string, orderData: UpdateOrderDTO): Promise<OrderModel> {
     const order = await OrderModel.findByPk(id);
     if (!order) {
       throw new Error("Order not found");
@@ -466,7 +538,7 @@ export class OrderService {
     return order;
   }
 
-  async deleteOrder(id: string) {
+  async deleteOrder(id: string): Promise<{ message: string }> {
     const order = await OrderModel.findByPk(id);
     if (!order) {
       throw new Error("Order not found");
@@ -485,7 +557,7 @@ export class OrderService {
   //   return orderGroup;
   // }
 
-  async getOrderGroupById(id: number) {
+  async getOrderGroupById(id: number): Promise<OrderGroupModel> {
     const orderGroup = await OrderGroupModel.findByPk(id, {
       include: [{ model: OrderModel, as: "orders" }],
     });
@@ -497,12 +569,12 @@ export class OrderService {
   }
 
   // OrderItem methods
-  async addOrderItem(orderItemData: CreateOrderItemDTO) {
+  async addOrderItem(orderItemData: CreateOrderItemDTO): Promise<OrderItemModel> {
     const orderItem = await OrderItemModel.create(orderItemData);
     return orderItem;
   }
 
-  async getOrderItems(orderId: string) {
+  async getOrderItems(orderId: string): Promise<OrderItemModel[]> {
     const orderItems = await OrderItemModel.findAll({
       where: { order_id: orderId },
     });
@@ -510,16 +582,16 @@ export class OrderService {
   }
 
   // OrderShipment methods
-  async createOrderShipment(shipmentData: CreateOrderShipmentDTO) {
+  async createOrderShipment(shipmentData: CreateOrderShipmentDTO): Promise<OrderShipmentModel> {
     const shipment = await OrderShipmentModel.create({
-      ...shipmentData,
+      ...(shipmentData as any),
       createdAt: new Date(),
       updatedAt: new Date(),
-    });
+    } as any);
     return shipment;
   }
 
-  async updateOrderShipment(id: number, shipmentData: UpdateOrderShipmentDTO) {
+  async updateOrderShipment(id: number, shipmentData: UpdateOrderShipmentDTO): Promise<OrderShipmentModel> {
     const shipment = await OrderShipmentModel.findByPk(id);
     if (!shipment) {
       throw new Error("Order shipment not found");
@@ -529,7 +601,7 @@ export class OrderService {
     return shipment;
   }
 
-  async getOrderShipment(orderId: string) {
+  async getOrderShipment(orderId: string): Promise<OrderShipmentModel | null> {
     const shipment = await OrderShipmentModel.findOne({
       where: { order_id: orderId },
     });
@@ -541,7 +613,7 @@ export class OrderService {
     orderId: string,
     statusNameId: number,
     description?: string
-  ) {
+  ): Promise<OrderStatusModel> {
     const orderStatus = await OrderStatusModel.create({
       order_id: orderId,
       status_name_id: statusNameId,
@@ -551,7 +623,7 @@ export class OrderService {
     return orderStatus;
   }
 
-  async getOrderStatuses(orderId: string) {
+  async getOrderStatuses(orderId: string): Promise<OrderStatusModel[]> {
     const statuses = await OrderStatusModel.findAll({
       where: { order_id: orderId },
       order: [["id", "DESC"]],
@@ -559,7 +631,7 @@ export class OrderService {
     return statuses;
   }
 
-  async getOrdersByShopId(shopId: number) {
+  async getOrdersByShopId(shopId: number): Promise<OrderModel[]> {
     const orders = await OrderModel.findAll({
       where: { shop_id: shopId },
       include: [

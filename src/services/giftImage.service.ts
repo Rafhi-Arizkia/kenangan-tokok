@@ -5,7 +5,15 @@ import { paginationHelper } from "../utils/response";
 import { WhereOptions } from "sequelize";
 
 export class GiftImageService {
-  async getAllGiftImages(queryParams: GiftImageQueryDTO) {
+  async getAllGiftImages(queryParams: GiftImageQueryDTO): Promise<{
+    images: GiftImageModel[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+  }> {
     const { page = 1, limit = 10, gift_id, ...filters } = queryParams;
     
     const whereClause: WhereOptions = {};
@@ -43,7 +51,7 @@ export class GiftImageService {
     };
   }
 
-  async getGiftImageById(id: string) {
+  async getGiftImageById(id: string): Promise<GiftImageModel> {
     const image = await GiftImageModel.findByPk(id, {
       include: [
         {
@@ -59,7 +67,7 @@ export class GiftImageService {
     return image;
   }
 
-  async getGiftImagesByGiftId(giftId: number) {
+  async getGiftImagesByGiftId(giftId: number): Promise<GiftImageModel[]> {
     const images = await GiftImageModel.findAll({
       where: { gift_id: giftId },
       order: [['created_at', 'DESC']]
@@ -67,7 +75,7 @@ export class GiftImageService {
     return images;
   }
 
-  async createGiftImage(imageData: CreateGiftImageDTO) {
+  async createGiftImage(imageData: CreateGiftImageDTO): Promise<GiftImageModel> {
     // Check if gift exists
     const gift = await GiftModel.findByPk(imageData.gift_id);
     if (!gift) {
@@ -78,7 +86,7 @@ export class GiftImageService {
     return image;
   }
 
-  async updateGiftImage(id: string, imageData: UpdateGiftImageDTO) {
+  async updateGiftImage(id: string, imageData: UpdateGiftImageDTO): Promise<GiftImageModel> {
     const image = await GiftImageModel.findByPk(id);
     if (!image) {
       throw new Error("Gift image not found");
@@ -88,7 +96,7 @@ export class GiftImageService {
     return image;
   }
 
-  async deleteGiftImage(id: string) {
+  async deleteGiftImage(id: string): Promise<{ message: string }> {
     const image = await GiftImageModel.findByPk(id);
     if (!image) {
       throw new Error("Gift image not found");

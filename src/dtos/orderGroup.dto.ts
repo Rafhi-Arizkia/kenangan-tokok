@@ -1,52 +1,33 @@
 export interface CreateOrderGroupDTO {
   buyer_id: number;
   receiver_id?: number;
-  sender_name?: string;
-  sender_phone?: string;
-  sender_email?: string;
-  receiver_name?: string;
-  receiver_phone?: string;
-  receiver_email?: string;
-  shipping_address?: string;
-  shipping_city?: string;
-  shipping_province?: string;
-  shipping_postal_code?: string;
-  subtotal: number;
-  total_discount?: number;
-  shipping_cost?: number;
-  tax_amount?: number;
-  grand_total: number;
-  payment_method?: string;
-  notes?: string;
+  is_gift?: boolean | number;
+  is_surprise?: boolean | number;
+  is_hidden?: boolean | number;
+  reference_code?: string;
+  payment_gateway_fee?: number;
   targeted_receiver_name?: string;
+  type_device?: 'MOBILE' | 'WEB';
+  service_fee?: number;
   message?: string;
   receiver_message?: string;
-  confirm_gift_by?: Date;
+  // user id who confirmed the gift when confirmation is done without the app
+  confirm_gift_by?: number;
 }
 
 export interface UpdateOrderGroupDTO {
   receiver_id?: number;
-  sender_name?: string;
-  sender_phone?: string;
-  sender_email?: string;
-  receiver_name?: string;
-  receiver_phone?: string;
-  receiver_email?: string;
-  shipping_address?: string;
-  shipping_city?: string;
-  shipping_province?: string;
-  shipping_postal_code?: string;
-  subtotal?: number;
-  total_discount?: number;
-  shipping_cost?: number;
-  tax_amount?: number;
-  grand_total?: number;
-  payment_method?: string;
-  notes?: string;
+  is_gift?: boolean | number;
+  is_surprise?: boolean | number;
+  is_hidden?: boolean | number;
+  reference_code?: string;
+  payment_gateway_fee?: number;
   targeted_receiver_name?: string;
+  type_device?: 'MOBILE' | 'WEB';
+  service_fee?: number;
   message?: string;
   receiver_message?: string;
-  confirm_gift_by?: Date;
+  confirm_gift_by?: number;
 }
 
 export interface OrderGroupQueryDTO {

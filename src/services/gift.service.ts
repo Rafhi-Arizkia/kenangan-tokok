@@ -1,22 +1,29 @@
-// Update the import path below if your models are located elsewhere, e.g. '../models/gift.model'
 import { GiftModel } from "../models/gift.model";
 import { GiftImageModel } from "../models/giftImage.model";
 import { GiftReviewModel } from "../models/giftReview.model";
 import { GiftSpecificationModel } from "../models/giftSpecification.model";
-// import { GiftVariantModel } from '../models/giftVariant.model'; // Uncomment if needed and exists
 import {
+  GiftDTO,
   CreateGiftDTO,
   UpdateGiftDTO,
   GiftQueryDTO,
-  CreateGiftImageDTO,
-  CreateGiftReviewDTO,
-  CreateGiftSpecificationDTO,
 } from "../dtos/gift.dto";
+import { CreateGiftImageDTO } from "../dtos/giftImage.dto";
+import { CreateGiftReviewDTO } from "../dtos/giftReview.dto";
+import { CreateGiftSpecificationDTO } from "../dtos/giftSpecification.dto";
 import { paginationHelper } from "../utils/response";
 import { Op, WhereOptions } from "sequelize";
 
 export class GiftService {
-  async getAllGifts(queryParams: GiftQueryDTO) {
+  async getAllGifts(queryParams: GiftQueryDTO): Promise<{
+    gifts: GiftModel[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+  }> {
     const {
       search,
       shop_id,
@@ -104,7 +111,7 @@ export class GiftService {
     };
   }
 
-  async getGiftById(id: number) {
+  async getGiftById(id: number): Promise<GiftModel> {
     const gift = await GiftModel.findByPk(id, {
       include: [
         { model: GiftImageModel, as: "images" },
@@ -119,19 +126,12 @@ export class GiftService {
     return gift;
   }
 
-  async createGift(giftData: CreateGiftDTO) {
-    const payload: any = {
-      ...giftData,
-    };
-
-    // ensure defaults expected by model
-    if (payload.total_sold === undefined) payload.total_sold = 0;
-
-    const gift = await GiftModel.create(payload);
+  async createGift(giftData: CreateGiftDTO): Promise<GiftModel> {
+    const gift = await GiftModel.create(giftData as any);
     return gift;
   }
 
-  async updateGift(id: number, giftData: UpdateGiftDTO) {
+  async updateGift(id: number, giftData: UpdateGiftDTO): Promise<GiftModel> {
     const gift = await GiftModel.findByPk(id);
     if (!gift) {
       throw new Error("Gift not found");
@@ -141,7 +141,7 @@ export class GiftService {
     return gift;
   }
 
-  async deleteGift(id: number) {
+  async deleteGift(id: number): Promise<{ message: string }> {
     const gift = await GiftModel.findByPk(id);
     if (!gift) {
       throw new Error("Gift not found");
@@ -151,7 +151,7 @@ export class GiftService {
     return { message: "Gift deleted successfully" };
   }
 
-  async getGiftsByShopId(shopId: number) {
+  async getGiftsByShopId(shopId: number): Promise<GiftModel[]> {
     const gifts = await GiftModel.findAll({
       where: { shop_id: shopId },
       include: [
@@ -169,37 +169,22 @@ export class GiftService {
     return gifts;
   }
 
-  async addGiftImage(imageData: CreateGiftImageDTO) {
-    // model expects 'url' field
-    const image = await GiftImageModel.create({ ...imageData } as any);
+  async addGiftImage(imageData: CreateGiftImageDTO): Promise<GiftImageModel> {
+    const image = await GiftImageModel.create(imageData as any);
     return image;
   }
 
-  async addGiftReview(reviewData: CreateGiftReviewDTO) {
-    // model uses 'message' and doesn't have is_verified/is_approved fields
-    const payload: any = {
-      gift_id: reviewData.gift_id,
-      order_item_id: reviewData.order_item_id,
-      user_id: reviewData.user_id,
-      display_name: reviewData.display_name,
-      message: reviewData.message,
-      rating: reviewData.rating,
-      external_id: reviewData.external_id,
-    };
-
-    const review = await GiftReviewModel.create(payload);
+  async addGiftReview(reviewData: CreateGiftReviewDTO): Promise<GiftReviewModel> {
+    const review = await GiftReviewModel.create(reviewData as any);
     return review;
   }
 
-  async addGiftSpecification(specData: CreateGiftSpecificationDTO) {
-    // model uses 'key' instead of 'name'
-    const specification = await GiftSpecificationModel.create({
-      ...specData,
-    } as any);
+  async addGiftSpecification(specData: CreateGiftSpecificationDTO): Promise<GiftSpecificationModel> {
+    const specification = await GiftSpecificationModel.create(specData as any);
     return specification;
   }
 
-  async getGiftReviews(giftId: number) {
+  async getGiftReviews(giftId: number): Promise<GiftReviewModel[]> {
     const reviews = await GiftReviewModel.findAll({
       where: { gift_id: giftId },
       order: [["createdAt", "DESC"]],

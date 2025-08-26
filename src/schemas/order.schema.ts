@@ -21,35 +21,6 @@ export const orderSchema = {
   },
 };
 
-// Order Group Schema
-export const orderGroupSchema = {
-  type: 'object',
-  properties: {
-    id: { type: 'integer', description: 'Order group unique identifier' },
-    receiver_id: { type: 'integer', description: 'Receiver user ID' },
-    sender_name: { type: 'string', description: 'Sender name' },
-    sender_phone: { type: 'string', description: 'Sender phone number' },
-    sender_email: { type: 'string', format: 'email', description: 'Sender email' },
-    receiver_name: { type: 'string', description: 'Receiver name' },
-    receiver_phone: { type: 'string', description: 'Receiver phone number' },
-    receiver_email: { type: 'string', format: 'email', description: 'Receiver email' },
-    shipping_address: { type: 'string', description: 'Shipping address' },
-    shipping_city: { type: 'string', description: 'Shipping city' },
-    shipping_province: { type: 'string', description: 'Shipping province' },
-    shipping_postal_code: { type: 'string', description: 'Shipping postal code' },
-    total_amount: { type: 'number', minimum: 0, description: 'Total amount before discounts' },
-    total_discount: { type: 'number', minimum: 0, description: 'Total discount amount' },
-    shipping_cost: { type: 'number', minimum: 0, description: 'Shipping cost' },
-    tax_amount: { type: 'number', minimum: 0, description: 'Tax amount' },
-    grand_total: { type: 'number', minimum: 0, description: 'Final total amount' },
-    payment_method: { type: 'string', description: 'Payment method used' },
-    payment_status: { type: 'string', description: 'Payment status' },
-    notes: { type: 'string', description: 'Order group notes' },
-  created_at: { type: 'string', format: 'date-time', description: 'Creation timestamp' },
-  updated_at: { type: 'string', format: 'date-time', description: 'Last update timestamp' },
-  },
-};
-
 // Order Item Schema
 export const orderItemSchema = {
   type: 'object',
@@ -382,77 +353,20 @@ export const getOrdersByShopIdSchema = {
   },
 };
 
-// POST /orders/groups - Create order group
-export const createOrderGroupSchema = {
-  summary: 'Create order group',
-  description: 'Create a new order group for multiple orders',
-  tags: ['Order'],
-  body: {
-    type: 'object',
-    required: ['total_amount', 'grand_total', 'payment_status'],
-    properties: {
-      receiver_id: { type: 'integer', description: 'Receiver user ID' },
-      sender_name: { type: 'string', maxLength: 255, description: 'Sender name' },
-      sender_phone: { type: 'string', pattern: '^[+]?[0-9\\-\\s\\(\\)]+$', description: 'Sender phone' },
-      sender_email: { type: 'string', format: 'email', description: 'Sender email' },
-      receiver_name: { type: 'string', maxLength: 255, description: 'Receiver name' },
-      receiver_phone: { type: 'string', pattern: '^[+]?[0-9\\-\\s\\(\\)]+$', description: 'Receiver phone' },
-      receiver_email: { type: 'string', format: 'email', description: 'Receiver email' },
-      shipping_address: { type: 'string', maxLength: 500, description: 'Shipping address' },
-      shipping_city: { type: 'string', maxLength: 100, description: 'Shipping city' },
-      shipping_province: { type: 'string', maxLength: 100, description: 'Shipping province' },
-      shipping_postal_code: { type: 'string', pattern: '^[0-9]{5}$', description: 'Postal code' },
-      total_amount: { type: 'number', minimum: 0, description: 'Total amount before discounts' },
-      total_discount: { type: 'number', minimum: 0, default: 0, description: 'Total discount amount' },
-      shipping_cost: { type: 'number', minimum: 0, default: 0, description: 'Shipping cost' },
-      tax_amount: { type: 'number', minimum: 0, default: 0, description: 'Tax amount' },
-      grand_total: { type: 'number', minimum: 0, description: 'Final total amount' },
-      payment_method: { 
-        type: 'string',
-        enum: ['credit_card', 'bank_transfer', 'e_wallet', 'cash_on_delivery'],
-        description: 'Payment method' 
-      },
-      payment_status: { 
-        type: 'string',
-        enum: ['pending', 'paid', 'failed', 'refunded'],
-        description: 'Payment status' 
-      },
-      notes: { type: 'string', maxLength: 500, description: 'Order group notes' },
-    },
-  },
-  response: {
-    201: {
-      ...successResponseSchema,
-      properties: {
-        ...successResponseSchema.properties,
-        data: orderGroupSchema,
-      },
-    },
-    400: errorResponseSchema,
-    500: errorResponseSchema,
-  },
-};
 
-// GET /orders/groups/:id - Get order group by ID
-export const getOrderGroupByIdSchema = {
-  summary: 'Get order group by ID',
-  description: 'Retrieve an order group with all its orders',
-  tags: ['Order'],
+
+// DELETE /order-groups/:id - delete
+export const deleteOrderGroupSchema = {
+  summary: 'Delete order group',
+  description: 'Delete an order group',
+  tags: ['OrderGroup'],
   params: {
     type: 'object',
     required: ['id'],
-    properties: {
-      id: { type: 'integer', description: 'Order group ID' },
-    },
+    properties: { id: { type: 'integer' } },
   },
   response: {
-    200: {
-      ...successResponseSchema,
-      properties: {
-        ...successResponseSchema.properties,
-        data: orderGroupSchema,
-      },
-    },
+    200: successResponseSchema,
     404: errorResponseSchema,
     500: errorResponseSchema,
   },

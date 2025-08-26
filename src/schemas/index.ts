@@ -5,3 +5,4 @@ export * from './gift.schema';
 export * from './shop.schema';
 export * from './order.schema';
 export * from './system.schema';
+export * from './order-group.schema';

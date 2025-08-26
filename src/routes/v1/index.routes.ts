@@ -8,6 +8,7 @@ import giftReviewRoutes from './giftReview.routes';
 import giftSpecificationRoutes from './giftSpecification.routes';
 import giftVariantRoutes from './giftVariant.routes';
 import orderRoutes from './order.routes';
+import orderGroupRoutes from './orderGroup.routes';
 import { healthCheckSchema } from '../../schemas/system.schema';
 
 export default async function routesV1(fastify: FastifyInstance) {
@@ -35,4 +36,5 @@ export default async function routesV1(fastify: FastifyInstance) {
   await fastify.register(giftSpecificationRoutes, { prefix: '/gift-specifications' });
   await fastify.register(giftVariantRoutes, { prefix: '/gift-variants' });
   await fastify.register(orderRoutes, { prefix: '/orders' });
+  await fastify.register(orderGroupRoutes, { prefix: '/order-groups' });
 }

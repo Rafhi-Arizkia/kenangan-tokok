@@ -1,102 +1,76 @@
-import { Model, DataTypes, Optional } from 'sequelize';
-import { sequelize } from '../database/connection';
+import { Model, DataTypes, Optional } from "sequelize";
+import { sequelize } from "../database/connection";
 
 export interface OrderGroupAttributes {
   id: number;
   buyer_id: number;
   receiver_id?: number | null;
-  sender_name?: string | null;
-  sender_phone?: string | null;
-  sender_email?: string | null;
-  receiver_name?: string | null;
-  receiver_phone?: string | null;
-  receiver_email?: string | null;
-  shipping_address?: string | null;
-  shipping_city?: string | null;
-  shipping_province?: string | null;
-  shipping_postal_code?: string | null;
-  subtotal: number;
-  total_discount: number;
-  shipping_cost: number;
-  tax_amount: number;
-  grand_total: number;
-  payment_method?: string | null;
-  notes?: string | null;
+  is_gift: number;
+  is_surprise: number;
+  is_hidden: number;
+  reference_code: string;
+  payment_gateway_fee: number;
   targeted_receiver_name?: string | null;
+  type_device: "MOBILE" | "WEB";
+  service_fee: number;
   message?: string | null;
   receiver_message?: string | null;
-  confirm_gift_by?: Date | null;
-  created_at: Date;
-  updated_at: Date;
-  deleted_at?: Date | null;
+  confirm_gift_by?: number | null;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt?: Date | null;
 }
 
 export interface OrderGroupCreationAttributes
   extends Optional<
     OrderGroupAttributes,
-    | 'id'
-    | 'receiver_id'
-    | 'sender_name'
-    | 'sender_phone'
-    | 'sender_email'
-    | 'receiver_name'
-    | 'receiver_phone'
-    | 'receiver_email'
-    | 'shipping_address'
-    | 'shipping_city'
-    | 'shipping_province'
-    | 'shipping_postal_code'
-    | 'total_discount'
-    | 'shipping_cost'
-    | 'tax_amount'
-    | 'payment_method'
-    | 'notes'
-    | 'targeted_receiver_name'
-    | 'message'
-    | 'receiver_message'
-    | 'confirm_gift_by'
-    | 'created_at'
-    | 'updated_at'
-    | 'deleted_at'
+    | "id"
+    | "receiver_id"
+    | "is_gift"
+    | "is_surprise"
+    | "is_hidden"
+    | "reference_code"
+    | "payment_gateway_fee"
+    | "targeted_receiver_name"
+    | "type_device"
+    | "service_fee"
+    | "message"
+    | "receiver_message"
+    | "confirm_gift_by"
+    | "createdAt"
+    | "updatedAt"
+    | "deletedAt"
   > {}
 
 class OrderGroupModel
   extends Model<OrderGroupAttributes, OrderGroupCreationAttributes>
   implements OrderGroupAttributes
 {
-  public id!: number;
-  public buyer_id!: number;
-  public receiver_id?: number | null;
-  public sender_name?: string | null;
-  public sender_phone?: string | null;
-  public sender_email?: string | null;
-  public receiver_name?: string | null;
-  public receiver_phone?: string | null;
-  public receiver_email?: string | null;
-  public shipping_address?: string | null;
-  public shipping_city?: string | null;
-  public shipping_province?: string | null;
-  public shipping_postal_code?: string | null;
-  public subtotal!: number;
-  public total_discount!: number;
-  public shipping_cost!: number;
-  public tax_amount!: number;
-  public grand_total!: number;
-  public payment_method?: string | null;
-  public notes?: string | null;
-  public targeted_receiver_name?: string | null;
-  public message?: string | null;
-  public receiver_message?: string | null;
-  public confirm_gift_by?: Date | null;
-  public created_at!: Date;
-  public updated_at!: Date;
-  public deleted_at?: Date | null;
+  declare id: number;
+  declare buyer_id: number;
+  declare receiver_id?: number | null;
+  declare is_gift: number;
+  declare is_surprise: number;
+  declare is_hidden: number;
+  declare reference_code: string;
+  declare payment_gateway_fee: number;
+  declare targeted_receiver_name?: string | null;
+  declare type_device: "MOBILE" | "WEB";
+  declare service_fee: number;
+  declare message?: string | null;
+  declare receiver_message?: string | null;
+  // `confirm_gift_by` digunakan untuk menyimpan user yang mengkonfirmasi gift
+  // pada saat user tanpa aplikasi melakukan konfirmasi gift
+  declare confirm_gift_by?: number | null;
+  declare createdAt: Date;
+  declare updatedAt: Date;
+  declare deletedAt?: Date | null;
 
   // Static association method
   public static associate(models: any) {
     OrderGroupModel.hasMany(models.Order, {
-      foreignKey: 'order_group_id',
-      as: 'orders',
+      foreignKey: "order_group_id",
+      as: "orders",
     });
   }
 }
@@ -115,84 +89,41 @@ OrderGroupModel.init(
     },
     receiver_id: {
       type: DataTypes.BIGINT,
-      allowNull: true
-    },
-    sender_name: {
-      type: DataTypes.STRING(255),
       allowNull: true,
     },
-    sender_phone: {
-      type: DataTypes.STRING(20),
-      allowNull: true,
-    },
-    sender_email: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
-    },
-    receiver_name: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
-    },
-    receiver_phone: {
-      type: DataTypes.STRING(20),
-      allowNull: true,
-    },
-    receiver_email: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
-    },
-    shipping_address: {
-      type: DataTypes.TEXT,
-      allowNull: true,
-    },
-    shipping_city: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
-    },
-    shipping_province: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
-    },
-    shipping_postal_code: {
-      type: DataTypes.STRING(10),
-      allowNull: true,
-    },
-    subtotal: {
-      type: DataTypes.DECIMAL(15, 2),
+    is_gift: {
+      type: DataTypes.TINYINT,
       allowNull: false,
       defaultValue: 0,
     },
-    total_discount: {
-      type: DataTypes.DECIMAL(15, 2),
+    is_surprise: {
+      type: DataTypes.TINYINT,
       allowNull: false,
       defaultValue: 0,
     },
-    shipping_cost: {
-      type: DataTypes.DECIMAL(15, 2),
+    is_hidden: {
+      type: DataTypes.TINYINT,
       allowNull: false,
       defaultValue: 0,
     },
-    tax_amount: {
-      type: DataTypes.DECIMAL(15, 2),
+    reference_code: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      defaultValue: DataTypes.UUIDV4,
+    },
+    payment_gateway_fee: {
+      type: DataTypes.BIGINT,
       allowNull: false,
       defaultValue: 0,
-    },
-    grand_total: {
-      type: DataTypes.DECIMAL(15, 2),
-      allowNull: false,
-      defaultValue: 0,
-    },
-    payment_method: {
-      type: DataTypes.STRING(50),
-      allowNull: true,
-    },
-    notes: {
-      type: DataTypes.TEXT,
-      allowNull: true,
     },
     targeted_receiver_name: {
       type: DataTypes.STRING(255),
       allowNull: true,
+    },
+    type_device: {
+      type: DataTypes.ENUM("MOBILE", "WEB"),
+      defaultValue: "MOBILE",
+      allowNull: false,
     },
     message: {
       type: DataTypes.TEXT,
@@ -202,34 +133,44 @@ OrderGroupModel.init(
       type: DataTypes.TEXT,
       allowNull: true,
     },
+    // `confirm_gift_by` digunakan untuk menyimpan user yang mengkonfirmasi gift
+    // pada saat user tanpa aplikasi melakukan konfirmasi gift
+    // ini otomatis terisi oleh code di `server/app/api-mobile/v3/user/order-no-app/
     confirm_gift_by: {
-      type: DataTypes.DATE,
+      type: DataTypes.BIGINT,
       allowNull: true,
+      defaultValue: null,
     },
-    created_at: {
+    service_fee: {
+      type: DataTypes.BIGINT,
+      defaultValue: 0,
+      allowNull: false,
+    },
+    createdAt: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
     },
-    updated_at: {
+    updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
     },
-    deleted_at: {
+    deletedAt: {
       type: DataTypes.DATE,
       allowNull: true,
     },
   },
   {
     sequelize,
-    modelName: 'OrderGroup',
-    tableName: 'order_group',
+    underscored: false,
+    modelName: "OrderGroup",
+    tableName: "order_group",
     timestamps: true,
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
     paranoid: true,
-    deletedAt: 'deleted_at',
+    deletedAt: "deletedAt",
   }
 );
 

@@ -5,7 +5,15 @@ import { Op, WhereOptions } from "sequelize";
 import { ShopModel } from "../models/shop.model";
 
 export class ShopAddressService {
-  async getAllShopAddresses(queryParams: ShopAddressQueryDTO) {
+  async getAllShopAddresses(queryParams: ShopAddressQueryDTO): Promise<{
+    addresses: ShopAddressModel[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+  }> {
     const { page = 1, limit = 10, shop_id, city, is_open, ...filters } = queryParams;
     
     const whereClause: WhereOptions = {};
@@ -53,7 +61,7 @@ export class ShopAddressService {
     };
   }
 
-  async getShopAddressById(id: string) {
+  async getShopAddressById(id: string): Promise<ShopAddressModel> {
     const address = await ShopAddressModel.findByPk(id, {
       include: [
         {
@@ -69,7 +77,7 @@ export class ShopAddressService {
     return address;
   }
 
-  async getShopAddressByShopId(shopId: number) {
+  async getShopAddressByShopId(shopId: number): Promise<ShopAddressModel | null> {
     const address = await ShopAddressModel.findOne({
       where: { shop_id: shopId },
       include: [
@@ -83,7 +91,7 @@ export class ShopAddressService {
     return address;
   }
 
-  async createShopAddress(addressData: CreateShopAddressDTO) {
+  async createShopAddress(addressData: CreateShopAddressDTO): Promise<ShopAddressModel> {
     // Check if shop exists
     const shop = await ShopModel.findByPk(addressData.shop_id);
     if (!shop) {
@@ -102,7 +110,7 @@ export class ShopAddressService {
     return address;
   }
 
-  async updateShopAddress(id: string, addressData: UpdateShopAddressDTO) {
+  async updateShopAddress(id: string, addressData: UpdateShopAddressDTO): Promise<ShopAddressModel> {
     const address = await ShopAddressModel.findByPk(id);
     if (!address) {
       throw new Error("Shop address not found");
@@ -112,7 +120,7 @@ export class ShopAddressService {
     return address;
   }
 
-  async deleteShopAddress(id: string) {
+  async deleteShopAddress(id: string): Promise<{ message: string }> {
     const address = await ShopAddressModel.findByPk(id);
     if (!address) {
       throw new Error("Shop address not found");

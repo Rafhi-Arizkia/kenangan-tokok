@@ -5,7 +5,15 @@ import { paginationHelper } from "../utils/response";
 import { WhereOptions, Op } from "sequelize";
 
 export class GiftSpecificationService {
-  async getAllGiftSpecifications(queryParams: GiftSpecificationQueryDTO) {
+  async getAllGiftSpecifications(queryParams: GiftSpecificationQueryDTO): Promise<{
+    specifications: GiftSpecificationModel[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+  }> {
     const { page = 1, limit = 10, gift_id, key, ...filters } = queryParams;
     
     const whereClause: WhereOptions = {};
@@ -49,7 +57,7 @@ export class GiftSpecificationService {
     };
   }
 
-  async getGiftSpecificationById(id: string) {
+  async getGiftSpecificationById(id: string): Promise<GiftSpecificationModel> {
     const specification = await GiftSpecificationModel.findByPk(id, {
       include: [
         {
@@ -65,7 +73,7 @@ export class GiftSpecificationService {
     return specification;
   }
 
-  async getGiftSpecificationsByGiftId(giftId: number) {
+  async getGiftSpecificationsByGiftId(giftId: number): Promise<GiftSpecificationModel[]> {
     const specifications = await GiftSpecificationModel.findAll({
       where: { gift_id: giftId },
       order: [['key', 'ASC']]
@@ -73,7 +81,7 @@ export class GiftSpecificationService {
     return specifications;
   }
 
-  async createGiftSpecification(specificationData: CreateGiftSpecificationDTO) {
+  async createGiftSpecification(specificationData: CreateGiftSpecificationDTO): Promise<GiftSpecificationModel> {
     // Check if gift exists
     const gift = await GiftModel.findByPk(specificationData.gift_id);
     if (!gift) {
@@ -95,7 +103,7 @@ export class GiftSpecificationService {
     return specification;
   }
 
-  async updateGiftSpecification(id: string, specificationData: UpdateGiftSpecificationDTO) {
+  async updateGiftSpecification(id: string, specificationData: UpdateGiftSpecificationDTO): Promise<GiftSpecificationModel> {
     const specification = await GiftSpecificationModel.findByPk(id);
     if (!specification) {
       throw new Error("Gift specification not found");
@@ -119,7 +127,7 @@ export class GiftSpecificationService {
     return specification;
   }
 
-  async deleteGiftSpecification(id: string) {
+  async deleteGiftSpecification(id: string): Promise<{ message: string }> {
     const specification = await GiftSpecificationModel.findByPk(id);
     if (!specification) {
       throw new Error("Gift specification not found");
@@ -129,7 +137,7 @@ export class GiftSpecificationService {
     return { message: "Gift specification deleted successfully" };
   }
 
-  async bulkCreateGiftSpecifications(giftId: number, specifications: Array<{key: string, value: string}>) {
+  async bulkCreateGiftSpecifications(giftId: number, specifications: Array<{key: string, value: string}>): Promise<GiftSpecificationModel[]> {
     // Check if gift exists
     const gift = await GiftModel.findByPk(giftId);
     if (!gift) {
@@ -147,7 +155,7 @@ export class GiftSpecificationService {
     return createdSpecs;
   }
 
-  async bulkUpdateGiftSpecifications(giftId: number, specifications: Array<{key: string, value: string}>) {
+  async bulkUpdateGiftSpecifications(giftId: number, specifications: Array<{key: string, value: string}>): Promise<GiftSpecificationModel[]> {
     // Delete existing specifications for this gift
     await GiftSpecificationModel.destroy({
       where: { gift_id: giftId }
