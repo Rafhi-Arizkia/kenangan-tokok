@@ -117,12 +117,14 @@ const registerSecurity = async (fastifyInstance: typeof server) => {
     );
   }
 
-  try {
+    try {
     const multipart = require("@fastify/multipart");
+    // Attach form fields to request.body so Fastify schema validation sees an object
     await fastifyInstance.register(multipart, {
       limits: {
         fileSize: parseInt(process.env.MAX_UPLOAD_SIZE || "10485760"), // 10MB default
       },
+      attachFieldsToBody: true,
     });
   } catch (err) {
     fastifyInstance.log.info(
