@@ -1,7 +1,7 @@
 import { FastifyReply } from "fastify";
 
 export interface ApiResponse<T> {
-  success: boolean;
+  statusCode: number;
   message: string;
   data?: T;
   pagination?: {
@@ -14,10 +14,9 @@ export interface ApiResponse<T> {
 }
 
 export interface ErrorResponse {
-  success: false;
+  statusCode: number;
   message: string;
   error?: string;
-  code?: number;
   timestamp: string;
 }
 
@@ -35,7 +34,7 @@ export class ResponseHandler {
     statusCode: number = 200
   ) {
     const response: ApiResponse<T> = {
-      success: true,
+      statusCode,
       message,
       timestamp: new Date().toISOString(),
     };
@@ -58,10 +57,9 @@ export class ResponseHandler {
     statusCode: number = 500
   ) {
     const response: ErrorResponse = {
-      success: false,
+      statusCode,
       message,
       error,
-      code: statusCode,
       timestamp: new Date().toISOString(),
     };
 

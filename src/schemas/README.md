@@ -102,7 +102,7 @@ All endpoints follow consistent response patterns:
 ### Success Response
 ```json
 {
-  "success": true,
+  "statusCode": 200,
   "message": "Operation completed successfully",
   "data": { /* actual data */ }
 }
@@ -111,7 +111,7 @@ All endpoints follow consistent response patterns:
 ### Error Response
 ```json
 {
-  "success": false,
+  "statusCode": 400,
   "message": "Error description",
   "error": {
     "code": "ERROR_CODE",
@@ -123,7 +123,7 @@ All endpoints follow consistent response patterns:
 ### Paginated Response
 ```json
 {
-  "success": true,
+  "statusCode": 200,
   "message": "Data retrieved successfully",
   "data": {
     "items": [ /* array of items */ ],

@@ -212,7 +212,7 @@ export class OrderService {
         }));
         
         return {
-          success: false,
+          statusCode: 400,
           errors: responseData,
           orderGroup: null,
           orders: []
@@ -229,7 +229,7 @@ export class OrderService {
       }));
 
       return {
-        success: true,
+        statusCode: 201,
         errors: [],
         orderGroup,
         orders: results.map(r => r.data),

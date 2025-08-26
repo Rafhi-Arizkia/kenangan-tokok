@@ -3,17 +3,17 @@
 export const successResponseSchema = {
   type: 'object',
   properties: {
-    success: { type: 'boolean', example: true },
+    statusCode: { type: 'integer', example: 200 },
     message: { type: 'string', description: 'Success message' },
     data: { type: 'object', description: 'Response data' },
   },
-  required: ['success', 'message'],
+  required: ['statusCode', 'message'],
 };
 
 export const errorResponseSchema = {
   type: 'object',
   properties: {
-    success: { type: 'boolean', example: false },
+    statusCode: { type: 'integer', example: 400 },
     message: { type: 'string', description: 'Error message' },
     error: { 
       type: 'object',
@@ -24,7 +24,7 @@ export const errorResponseSchema = {
       },
     },
   },
-  required: ['success', 'message'],
+  required: ['statusCode', 'message'],
 };
 
 export const paginationSchema = {

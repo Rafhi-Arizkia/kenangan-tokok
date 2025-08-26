@@ -21,8 +21,8 @@ async function categoryRoutes(fastify: FastifyInstance, options: FastifyPluginOp
     // TODO: Implement with CategoryController
     // return categoryController.getAllCategories.bind(categoryController);
     reply.status(501).send({
-      success: false,
-      message: 'CategoryController not implemented yet',
+  statusCode: 501,
+  message: 'CategoryController not implemented yet',
     });
   });
 
@@ -32,8 +32,8 @@ async function categoryRoutes(fastify: FastifyInstance, options: FastifyPluginOp
   }, async (request, reply) => {
     // TODO: Implement with CategoryController
     reply.status(501).send({
-      success: false,
-      message: 'CategoryController not implemented yet',
+  statusCode: 501,
+  message: 'CategoryController not implemented yet',
     });
   });
 
@@ -43,8 +43,8 @@ async function categoryRoutes(fastify: FastifyInstance, options: FastifyPluginOp
   }, async (request, reply) => {
     // TODO: Implement with CategoryController
     reply.status(501).send({
-      success: false,
-      message: 'CategoryController not implemented yet',
+  statusCode: 501,
+  message: 'CategoryController not implemented yet',
     });
   });
 
@@ -54,8 +54,8 @@ async function categoryRoutes(fastify: FastifyInstance, options: FastifyPluginOp
   }, async (request, reply) => {
     // TODO: Implement with CategoryController
     reply.status(501).send({
-      success: false,
-      message: 'CategoryController not implemented yet',
+  statusCode: 501,
+  message: 'CategoryController not implemented yet',
     });
   });
 
@@ -65,8 +65,8 @@ async function categoryRoutes(fastify: FastifyInstance, options: FastifyPluginOp
   }, async (request, reply) => {
     // TODO: Implement with CategoryController
     reply.status(501).send({
-      success: false,
-      message: 'CategoryController not implemented yet',
+  statusCode: 501,
+  message: 'CategoryController not implemented yet',
     });
   });
 
@@ -76,8 +76,8 @@ async function categoryRoutes(fastify: FastifyInstance, options: FastifyPluginOp
   }, async (request, reply) => {
     // TODO: Implement with CategoryController
     reply.status(501).send({
-      success: false,
-      message: 'CategoryController not implemented yet',
+  statusCode: 501,
+  message: 'CategoryController not implemented yet',
     });
   });
 
@@ -87,8 +87,8 @@ async function categoryRoutes(fastify: FastifyInstance, options: FastifyPluginOp
   }, async (request, reply) => {
     // TODO: Implement with CategoryController
     reply.status(501).send({
-      success: false,
-      message: 'CategoryController not implemented yet',
+  statusCode: 501,
+  message: 'CategoryController not implemented yet',
     });
   });
 }

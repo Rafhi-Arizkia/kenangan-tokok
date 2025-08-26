@@ -266,7 +266,6 @@ export const createOrderSchema = {
         data: {
           type: 'object',
           properties: {
-            success: { type: 'boolean' },
             errors: { type: 'array' },
             orderGroup: { type: 'object' },
             orders: { type: 'array' },

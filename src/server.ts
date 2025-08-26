@@ -70,7 +70,7 @@ const registerSecurity = async (fastifyInstance: typeof server) => {
       timeWindow: parseInt(process.env.RATE_LIMIT_WINDOW || "60000"), // 1 minute
       errorResponseBuilder: function (request: any, context: any) {
         return {
-          success: false,
+          statusCode: 429,
           message: "Too many requests, please try again later.",
         };
       },

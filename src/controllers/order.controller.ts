@@ -40,10 +40,11 @@ export class OrderController {
     try {
       const result = await orderService.createOrder(request.body);
       
-      if (!result.success) {
-        return ResponseHandler.error(reply, 'Failed to create order', JSON.stringify(result.errors), 400);
+      // If service returned an error-like object with statusCode >= 400, forward it
+      if ((result as any).statusCode && (result as any).statusCode >= 400) {
+        return ResponseHandler.error(reply, 'Failed to create order', JSON.stringify((result as any).errors), 400);
       }
-      
+
       return ResponseHandler.success(reply, result, 'Orders created successfully');
     } catch (error: any) {
       return ResponseHandler.error(reply, 'Failed to create order', error.message, 400);
