@@ -51,10 +51,6 @@ async function giftRoutes(fastify: FastifyInstance, options: FastifyPluginOption
     schema: addGiftImageSchema,
   }, giftController.addGiftImage.bind(giftController));
 
-  // POST /api/gifts/images/upload - Upload image file (multipart/form-data)
-  fastify.post('/images/upload', {
-    // no strict schema for multipart here; handled in controller
-  }, giftController.uploadGiftImage.bind(giftController));
 
   // POST /api/gifts/reviews - Add gift review
   fastify.post('/reviews', {
