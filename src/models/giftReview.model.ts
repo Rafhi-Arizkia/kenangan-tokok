@@ -4,31 +4,38 @@ import { sequelize } from '../database/connection';
 export interface GiftReviewAttributes {
   id: string;
   gift_id: number;
-  order_item_id?: number;
   user_id?: number;
+  order_item_id?: number;
+  display_name?: string;
+  message: string;
   rating: number;
-  review_text?: string;
-  is_verified: boolean;
-  is_approved: boolean;
-  helpful_count?: number;
-  created_at: Date;
-  updated_at: Date;
+  external_id?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt?: Date;
 }
 
-export interface GiftReviewCreationAttributes extends Optional<GiftReviewAttributes, 'id' | 'created_at' | 'updated_at'> {}
+export interface GiftReviewCreationAttributes
+  extends Optional<
+    GiftReviewAttributes,
+    'id' | 'createdAt' | 'updatedAt' | 'deletedAt'
+  > {}
 
-export class GiftReview extends Model<GiftReviewAttributes, GiftReviewCreationAttributes> implements GiftReviewAttributes {
+export class GiftReview
+  extends Model<GiftReviewAttributes, GiftReviewCreationAttributes>
+  implements GiftReviewAttributes
+{
   public id!: string;
   public gift_id!: number;
-  public order_item_id?: number;
   public user_id?: number;
+  public order_item_id?: number;
+  public display_name?: string;
+  public message!: string;
   public rating!: number;
-  public review_text?: string;
-  public is_verified!: boolean;
-  public is_approved!: boolean;
-  public helpful_count?: number;
-  public created_at!: Date;
-  public updated_at!: Date;
+  public external_id?: string;
+  public createdAt!: Date;
+  public updatedAt!: Date;
+  public deletedAt?: Date;
 }
 
 GiftReview.init(
@@ -45,6 +52,12 @@ GiftReview.init(
         model: 'gift',
         key: 'id',
       },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+    },
+    user_id: {
+      type: DataTypes.BIGINT,
+      allowNull: true,
     },
     order_item_id: {
       type: DataTypes.BIGINT,
@@ -53,42 +66,36 @@ GiftReview.init(
         model: 'order_item',
         key: 'id',
       },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
     },
-    user_id: {
-      type: DataTypes.BIGINT,
+    display_name: {
+      type: DataTypes.TEXT,
       allowNull: true,
+    },
+    message: {
+      type: DataTypes.TEXT,
+      allowNull: false,
     },
     rating: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      validate: {
-        min: 1,
-        max: 5,
-      },
     },
-    review_text: {
+    external_id: {
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    is_verified: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-    },
-    is_approved: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-    },
-    helpful_count: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0,
-    },
-    created_at: {
+    createdAt: {
       type: DataTypes.DATE,
       allowNull: false,
     },
-    updated_at: {
+    updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
+    },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
   },
   {
@@ -96,10 +103,8 @@ GiftReview.init(
     modelName: 'GiftReview',
     tableName: 'gift__reviews',
     timestamps: true,
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
+    paranoid: true, // supaya Sequelize handle deletedAt otomatis
   }
 );
 
-// Export with Model suffix for consistency
 export { GiftReview as GiftReviewModel };

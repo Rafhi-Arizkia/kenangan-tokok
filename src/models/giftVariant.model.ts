@@ -4,29 +4,29 @@ import { sequelize } from '../database/connection';
 export interface GiftVariantAttributes {
   id: number;
   gift_id?: number;
-  variant_name: string;
-  variant_value: string;
-  price_adjustment?: number;
-  stock?: number;
-  sku?: string;
-  is_active: boolean;
+  variant_key1: string;
+  variant_key2?: string;
+  variant_value1: string;
+  variant_value2?: string;
   created_at: Date;
   updated_at: Date;
+  deleted_at?: Date | null;
 }
 
-export interface GiftVariantCreationAttributes extends Optional<GiftVariantAttributes, 'id' | 'created_at' | 'updated_at'> {}
+export interface GiftVariantCreationAttributes
+  extends Optional<GiftVariantAttributes, 'id' | 'gift_id' | 'variant_key2' | 'variant_value2' | 'deleted_at' | 'created_at' | 'updated_at'> {}
 
-export class GiftVariant extends Model<GiftVariantAttributes, GiftVariantCreationAttributes> implements GiftVariantAttributes {
+export class GiftVariant extends Model<GiftVariantAttributes, GiftVariantCreationAttributes>
+  implements GiftVariantAttributes {
   public id!: number;
   public gift_id?: number;
-  public variant_name!: string;
-  public variant_value!: string;
-  public price_adjustment?: number;
-  public stock?: number;
-  public sku?: string;
-  public is_active!: boolean;
+  public variant_key1!: string;
+  public variant_key2?: string;
+  public variant_value1!: string;
+  public variant_value2?: string;
   public created_at!: Date;
   public updated_at!: Date;
+  public deleted_at?: Date | null;
 }
 
 GiftVariant.init(
@@ -44,29 +44,21 @@ GiftVariant.init(
         key: 'id',
       },
     },
-    variant_name: {
-      type: DataTypes.STRING(255),
+    variant_key1: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
-    variant_value: {
-      type: DataTypes.STRING(255),
+    variant_key2: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    variant_value1: {
+      type: DataTypes.TEXT,
       allowNull: false,
     },
-    price_adjustment: {
-      type: DataTypes.DECIMAL(15, 2),
-      defaultValue: 0,
-    },
-    stock: {
-      type: DataTypes.INTEGER,
+    variant_value2: {
+      type: DataTypes.TEXT,
       allowNull: true,
-    },
-    sku: {
-      type: DataTypes.STRING(100),
-      allowNull: true,
-    },
-    is_active: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true,
     },
     created_at: {
       type: DataTypes.DATE,
@@ -76,6 +68,10 @@ GiftVariant.init(
       type: DataTypes.DATE,
       allowNull: false,
     },
+    deleted_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   },
   {
     sequelize,
@@ -84,8 +80,9 @@ GiftVariant.init(
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
+    paranoid: true, // supaya deleted_at ikut terkelola
+    deletedAt: 'deleted_at',
   }
 );
 
-// Export with Model suffix for consistency
 export { GiftVariant as GiftVariantModel };

@@ -4,25 +4,27 @@ import { sequelize } from '../database/connection';
 export interface GiftSpecificationAttributes {
   id: string;
   gift_id: number;
-  name: string;
+  key: string;
   value: string;
-  unit?: string;
-  sort_order?: number;
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt?: Date | null;
 }
 
-export interface GiftSpecificationCreationAttributes extends Optional<GiftSpecificationAttributes, 'id' | 'created_at' | 'updated_at'> {}
+export interface GiftSpecificationCreationAttributes
+  extends Optional<GiftSpecificationAttributes, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> {}
 
-export class GiftSpecification extends Model<GiftSpecificationAttributes, GiftSpecificationCreationAttributes> implements GiftSpecificationAttributes {
+export class GiftSpecification
+  extends Model<GiftSpecificationAttributes, GiftSpecificationCreationAttributes>
+  implements GiftSpecificationAttributes 
+{
   public id!: string;
   public gift_id!: number;
-  public name!: string;
+  public key!: string;
   public value!: string;
-  public unit?: string;
-  public sort_order?: number;
-  public created_at!: Date;
-  public updated_at!: Date;
+  public createdAt!: Date;
+  public updatedAt!: Date;
+  public deletedAt?: Date | null;
 }
 
 GiftSpecification.init(
@@ -39,8 +41,10 @@ GiftSpecification.init(
         model: 'gift',
         key: 'id',
       },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
     },
-    name: {
+    key: {
       type: DataTypes.STRING(255),
       allowNull: false,
     },
@@ -48,21 +52,17 @@ GiftSpecification.init(
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    unit: {
-      type: DataTypes.STRING(50),
-      allowNull: true,
-    },
-    sort_order: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
-    created_at: {
+    createdAt: {
       type: DataTypes.DATE,
       allowNull: false,
     },
-    updated_at: {
+    updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
+    },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
   },
   {
@@ -70,10 +70,8 @@ GiftSpecification.init(
     modelName: 'GiftSpecification',
     tableName: 'gift__specifications',
     timestamps: true,
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
+    paranoid: true, // supaya deletedAt dipakai untuk soft delete
   }
 );
 
-// Export with Model suffix for consistency
 export { GiftSpecification as GiftSpecificationModel };

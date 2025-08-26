@@ -4,63 +4,90 @@ import { sequelize } from '../database/connection';
 export interface GiftAttributes {
   id: number;
   shop_id: number;
-  category_id?: number;
+  category_id: number;
+  sub_category: string;
   name: string;
-  description?: string;
+  description: string;
   price: number;
-  discount_price?: number;
-  weight?: number;
-  stock?: number;
-  min_order?: number;
-  max_order?: number;
-  is_active: boolean;
-  is_featured: boolean;
-  sku?: string;
-  tags?: string;
-  meta_title?: string;
-  meta_description?: string;
-  rating?: number;
-  total_reviews?: number;
-  total_sold?: number;
-  created_at: Date;
-  updated_at: Date;
-  deleted_at?: Date;
+  total_sold: number;
+  photo: string;
+  minimum_days: number;
+  is_available: boolean;
+  weight: number;
+  height: number;
+  width: number;
+  length: number;
+  external_id?: string | null;
+  external_url?: string | null;
+  rating?: number | null;
+  status_download_photo?: 'PENDING' | 'SUCCESS' | 'FAILED';
+  gift_share_link?: string | null;
+  extra_data?: string | null;
+  stock: number;
+  createdAt: Date;
+  updatedAt: Date;
+  syncedAt?: Date | null;
+  deletedAt?: Date | null;
+  gift_variants_id?: number | null;
+  variant_combinations?: string | null;
 }
 
-interface GiftCreationAttributes extends Optional<GiftAttributes, 'id' | 'created_at' | 'updated_at'> {}
+export interface GiftCreationAttributes
+  extends Optional<
+    GiftAttributes,
+    | 'id'
+    | 'total_sold'
+    | 'external_id'
+    | 'external_url'
+    | 'rating'
+    | 'status_download_photo'
+    | 'gift_share_link'
+    | 'extra_data'
+    | 'syncedAt'
+    | 'deletedAt'
+    | 'gift_variants_id'
+    | 'variant_combinations'
+  > {}
 
-export class GiftModel extends Model<GiftAttributes, GiftCreationAttributes> implements GiftAttributes {
+export class GiftModel extends Model<GiftAttributes, GiftCreationAttributes>
+  implements GiftAttributes {
   public id!: number;
   public shop_id!: number;
-  public category_id?: number;
+  public category_id!: number;
+  public sub_category!: string;
   public name!: string;
-  public description?: string;
+  public description!: string;
   public price!: number;
-  public discount_price?: number;
-  public weight?: number;
-  public stock?: number;
-  public min_order?: number;
-  public max_order?: number;
-  public is_active!: boolean;
-  public is_featured!: boolean;
-  public sku?: string;
-  public tags?: string;
-  public meta_title?: string;
-  public meta_description?: string;
-  public rating?: number;
-  public total_reviews?: number;
-  public total_sold?: number;
-  public created_at!: Date;
-  public updated_at!: Date;
-  public deleted_at?: Date;
+  public total_sold!: number;
+  public photo!: string;
+  public minimum_days!: number;
+  public is_available!: boolean;
+  public weight!: number;
+  public height!: number;
+  public width!: number;
+  public length!: number;
+  public external_id?: string | null;
+  public external_url?: string | null;
+  public rating?: number | null;
+  public status_download_photo?: 'PENDING' | 'SUCCESS' | 'FAILED';
+  public gift_share_link?: string | null;
+  public extra_data?: string | null;
+  public stock!: number;
+  public createdAt!: Date;
+  public updatedAt!: Date;
+  public syncedAt?: Date | null;
+  public deletedAt?: Date | null;
+  public gift_variants_id?: number | null;
+  public variant_combinations?: string | null;
 }
 
 GiftModel.init(
   {
     id: {
-      type: DataTypes.BIGINT,
-      primaryKey: true,
       autoIncrement: true,
+      type: DataTypes.BIGINT,
+      allowNull: false,
+      primaryKey: true,
     },
     shop_id: {
       type: DataTypes.BIGINT,
@@ -68,97 +95,128 @@ GiftModel.init(
     },
     category_id: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      allowNull: false,
+    },
+    sub_category: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
     },
     name: {
       type: DataTypes.STRING(255),
       allowNull: false,
     },
     description: {
-      type: DataTypes.TEXT,
-      allowNull: true,
-    },
-    price: {
-      type: DataTypes.DECIMAL(15, 2),
+      type: DataTypes.STRING(255),
       allowNull: false,
     },
-    discount_price: {
-      type: DataTypes.DECIMAL(15, 2),
-      allowNull: true,
+    price: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
+    },
+    total_sold: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    photo: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    minimum_days: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    is_available: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
     },
     weight: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.FLOAT,
+      allowNull: false,
+      defaultValue: 1.0,
+    },
+    height: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
+      defaultValue: 1.0,
+    },
+    width: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
+      defaultValue: 1.0,
+    },
+    length: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
+      defaultValue: 1.0,
+    },
+    external_id: {
+      type: DataTypes.STRING,
       allowNull: true,
+      unique: true,
     },
-    stock: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
-    min_order: {
-      type: DataTypes.INTEGER,
-      defaultValue: 1,
-    },
-    max_order: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
-    is_active: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true,
-    },
-    is_featured: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-    },
-    sku: {
-      type: DataTypes.STRING(100),
-      allowNull: true,
-    },
-    tags: {
-      type: DataTypes.TEXT,
-      allowNull: true,
-    },
-    meta_title: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
-    },
-    meta_description: {
+    external_url: {
       type: DataTypes.TEXT,
       allowNull: true,
     },
     rating: {
-      type: DataTypes.DECIMAL(3, 2),
+      type: DataTypes.FLOAT,
       allowNull: true,
     },
-    total_reviews: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0,
+    status_download_photo: {
+      type: DataTypes.ENUM('PENDING', 'SUCCESS', 'FAILED'),
+      defaultValue: 'PENDING',
+      allowNull: true,
     },
-    total_sold: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0,
+    gift_share_link: {
+      type: DataTypes.TEXT,
+      allowNull: true,
     },
-    created_at: {
+    extra_data: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    stock: {
+      type: DataTypes.BIGINT,
+      defaultValue: 0,
+      allowNull: false,
+    },
+    createdAt: {
       type: DataTypes.DATE,
       allowNull: false,
     },
-    updated_at: {
+    updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
     },
-    deleted_at: {
+    syncedAt: {
       type: DataTypes.DATE,
+      allowNull: true,
+    },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    gift_variants_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    variant_combinations: {
+      type: DataTypes.TEXT,
       allowNull: true,
     },
   },
   {
     sequelize,
-    modelName: 'Gift',
     tableName: 'gift',
+    indexes: [
+      {
+        type: 'FULLTEXT',
+        name: 'gift_name_idx',
+        fields: ['name'],
+      },
+    ],
     timestamps: true,
-    paranoid: true,
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
-    deletedAt: 'deleted_at',
+    paranoid: true, // agar pakai deletedAt
   }
 );

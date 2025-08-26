@@ -1,31 +1,52 @@
-export interface OrderDTO {
-  id: string;
-  order_group_id: number;
-  shop_id?: number;
-  order_number?: string;
-  order_status: string;
-  total_amount: number;
-  total_discount?: number;
-  shipping_cost?: number;
-  tax_amount?: number;
-  grand_total: number;
-  notes?: string;
-  created_at: Date;
-  updated_at: Date;
-}
+// dto/order-request.dto.ts
 
 export interface CreateOrderDTO {
-  id: string;
-  order_group_id: number;
-  shop_id?: number;
-  order_number?: string;
-  order_status?: string;
-  total_amount: number;
-  total_discount?: number;
-  shipping_cost?: number;
-  tax_amount?: number;
-  grand_total: number;
-  notes?: string;
+  receiver_id: number;
+  buyer_id: number;
+  is_gift: 0 | 1;
+  is_hidden: 0 | 1;
+  is_surprise: 0 | 1;
+  orders: SingleOrderDTO[];
+}
+
+export interface SingleOrderDTO {
+  receiver: {
+    name: string | null;
+    phoneNo: string | null;
+  };
+  shopId: number;
+  dateOrderedFor: string; // ISO date string, e.g. "2023-06-14"
+  package: {
+    type: number; // e.g. 3
+    items: PackageItemDTO[];
+  };
+  shipment: ShipmentDTO;
+}
+
+export interface PackageItemDTO {
+  id: number;      // product/gift ID
+  qty: number;     // quantity
+  note: string | null;
+}
+
+export interface ShipmentDTO {
+  rateId: number;
+  useInsurance: boolean;
+  method: string;
+  logisticName: string;
+  minDay: number;
+  maxDay: number;
+  price: number;
+  dest: ShipmentDestinationDTO;
+}
+
+export interface ShipmentDestinationDTO {
+  address: string | null;
+  lat: string | null;
+  lng: string | null;
+  areaId: string | null;
+  description: string | null;
+  suburb_id: string | null;
 }
 
 export interface UpdateOrderDTO {
@@ -47,8 +68,8 @@ export interface OrderQueryDTO {
   order_status?: string;
   date_from?: string;
   date_to?: string;
-  sort_by?: 'created_at' | 'grand_total' | 'order_status';
-  sort_order?: 'ASC' | 'DESC';
+  sort_by?: "created_at" | "grand_total" | "order_status";
+  sort_order?: "ASC" | "DESC";
 }
 
 export interface OrderGroupDTO {

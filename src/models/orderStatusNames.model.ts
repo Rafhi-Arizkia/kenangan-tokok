@@ -4,21 +4,19 @@ import { sequelize } from '../database/connection';
 export interface OrderStatusNamesAttributes {
   id: number;
   name: string;
-  description?: string;
-  color?: string;
-  sort_order?: number;
-  is_active: boolean;
+  aliases_ind: string;
 }
 
-export interface OrderStatusNamesCreationAttributes extends Optional<OrderStatusNamesAttributes, 'id'> {}
+export interface OrderStatusNamesCreationAttributes
+  extends Optional<OrderStatusNamesAttributes, 'id'> {}
 
-export class OrderStatusNames extends Model<OrderStatusNamesAttributes, OrderStatusNamesCreationAttributes> implements OrderStatusNamesAttributes {
+export class OrderStatusNames
+  extends Model<OrderStatusNamesAttributes, OrderStatusNamesCreationAttributes>
+  implements OrderStatusNamesAttributes
+{
   public id!: number;
   public name!: string;
-  public description?: string;
-  public color?: string;
-  public sort_order?: number;
-  public is_active!: boolean;
+  public aliases_ind!: string;
 }
 
 OrderStatusNames.init(
@@ -28,34 +26,25 @@ OrderStatusNames.init(
       primaryKey: true,
     },
     name: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
+      type: DataTypes.STRING(255),
       unique: true,
+      allowNull: false,
     },
-    description: {
-      type: DataTypes.TEXT,
-      allowNull: true,
-    },
-    color: {
-      type: DataTypes.STRING(7),
-      allowNull: true,
-    },
-    sort_order: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
-    is_active: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true,
+    aliases_ind: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+      defaultValue: 'Batal',
     },
   },
   {
     sequelize,
     modelName: 'OrderStatusNames',
     tableName: 'order_status_names',
-    timestamps: false,
+    paranoid: false,
+    createdAt: false,
+    updatedAt: false,
+    deletedAt: false,
   }
 );
 
-// Export with Model suffix for consistency
 export { OrderStatusNames as OrderStatusNamesModel };

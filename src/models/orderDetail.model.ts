@@ -1,99 +1,98 @@
-import { Model, DataTypes, Optional } from 'sequelize';
-import { sequelize } from '../database/connection';
+import {
+  Model,
+  DataTypes,
+  Optional
+} from "sequelize";
+import { sequelize } from "../database/connection";
 
 export interface OrderDetailAttributes {
   id: number;
-  order_id?: string;
-  shop_id?: number;
-  wallet_id?: number;
-  cartItem_id?: number;
-  detail_type?: string;
-  detail_value?: string;
-  notes?: string;
-  created_at: Date;
-  updated_at: Date;
-  deleted_at?: Date;
+  external_id: string;
+  shop_id: number;
+  order_id: string;
+  wallet_id: number;
+  cartItem_id: string;
+  amount: number;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt?: Date | null;
 }
 
-export interface OrderDetailCreationAttributes extends Optional<OrderDetailAttributes, 'id' | 'created_at' | 'updated_at'> {}
+export interface OrderDetailCreationAttributes
+  extends Optional<
+    OrderDetailAttributes,
+    "id" | "deletedAt"
+  > {}
 
-export class OrderDetail extends Model<OrderDetailAttributes, OrderDetailCreationAttributes> implements OrderDetailAttributes {
+export class OrderDetailModel
+  extends Model<OrderDetailAttributes, OrderDetailCreationAttributes>
+  implements OrderDetailAttributes
+{
   public id!: number;
-  public order_id?: string;
-  public shop_id?: number;
-  public wallet_id?: number;
-  public cartItem_id?: number;
-  public detail_type?: string;
-  public detail_value?: string;
-  public notes?: string;
-  public created_at!: Date;
-  public updated_at!: Date;
-  public deleted_at?: Date;
+  public external_id!: string;
+  public shop_id!: number;
+  public order_id!: string;
+  public wallet_id!: number;
+  public cartItem_id!: string;
+  public amount!: number;
+  public createdAt!: Date;
+  public updatedAt!: Date;
+  public deletedAt!: Date | null;
 }
 
-OrderDetail.init(
+OrderDetailModel.init(
   {
     id: {
-      type: DataTypes.BIGINT,
-      primaryKey: true,
       autoIncrement: true,
+      type: DataTypes.BIGINT,
+      allowNull: false,
+      primaryKey: true,
     },
-    order_id: {
-      type: DataTypes.STRING(8),
-      allowNull: true,
-      references: {
-        model: 'order',
-        key: 'id',
-      },
+    external_id: {
+      type: DataTypes.STRING(30),
+      allowNull: false,
     },
     shop_id: {
       type: DataTypes.BIGINT,
-      allowNull: true,
+      allowNull: false,
+    },
+    order_id: {
+      type: DataTypes.STRING(8),
+      allowNull: false,
     },
     wallet_id: {
       type: DataTypes.BIGINT,
-      allowNull: true,
+      allowNull: false,
     },
     cartItem_id: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    amount: {
       type: DataTypes.BIGINT,
-      allowNull: true,
+      allowNull: false,
     },
-    detail_type: {
-      type: DataTypes.STRING(100),
-      allowNull: true,
-    },
-    detail_value: {
-      type: DataTypes.TEXT,
-      allowNull: true,
-    },
-    notes: {
-      type: DataTypes.TEXT,
-      allowNull: true,
-    },
-    created_at: {
+    createdAt: {
       type: DataTypes.DATE,
       allowNull: false,
     },
-    updated_at: {
+    updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
     },
-    deleted_at: {
+    deletedAt: {
       type: DataTypes.DATE,
       allowNull: true,
     },
   },
   {
     sequelize,
-    modelName: 'OrderDetail',
-    tableName: 'order_detail',
+    modelName: "OrderDetail",
+    tableName: "order_detail",
     timestamps: true,
     paranoid: true,
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
-    deletedAt: 'deleted_at',
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
+    deletedAt: "deletedAt",
   }
 );
-
-// Export with Model suffix for consistency
-export { OrderDetail as OrderDetailModel };

@@ -4,25 +4,25 @@ import { sequelize } from '../database/connection';
 export interface GiftImageAttributes {
   id: string;
   gift_id: number;
-  image_url: string;
-  alt_text?: string;
-  is_primary: boolean;
-  sort_order?: number;
+  url: string;
   created_at: Date;
   updated_at: Date;
+  deleted_at?: Date;
 }
 
-export interface GiftImageCreationAttributes extends Optional<GiftImageAttributes, 'id' | 'created_at' | 'updated_at'> {}
+export interface GiftImageCreationAttributes
+  extends Optional<GiftImageAttributes, 'id' | 'created_at' | 'updated_at' | 'deleted_at'> {}
 
-export class GiftImage extends Model<GiftImageAttributes, GiftImageCreationAttributes> implements GiftImageAttributes {
+export class GiftImage
+  extends Model<GiftImageAttributes, GiftImageCreationAttributes>
+  implements GiftImageAttributes
+{
   public id!: string;
   public gift_id!: number;
-  public image_url!: string;
-  public alt_text?: string;
-  public is_primary!: boolean;
-  public sort_order?: number;
+  public url!: string;
   public created_at!: Date;
   public updated_at!: Date;
+  public deleted_at?: Date;
 }
 
 GiftImage.init(
@@ -31,6 +31,7 @@ GiftImage.init(
       type: DataTypes.UUID,
       primaryKey: true,
       defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
     },
     gift_id: {
       type: DataTypes.BIGINT,
@@ -39,21 +40,11 @@ GiftImage.init(
         model: 'gift',
         key: 'id',
       },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
     },
-    image_url: {
-      type: DataTypes.STRING(500),
-      allowNull: false,
-    },
-    alt_text: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
-    },
-    is_primary: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-    },
-    sort_order: {
-      type: DataTypes.INTEGER,
+    url: {
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     created_at: {
@@ -64,6 +55,10 @@ GiftImage.init(
       type: DataTypes.DATE,
       allowNull: false,
     },
+    deleted_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   },
   {
     sequelize,
@@ -72,8 +67,9 @@ GiftImage.init(
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
+    paranoid: true,
+    deletedAt: 'deleted_at',
   }
 );
 
-// Export with Model suffix for consistency
 export { GiftImage as GiftImageModel };

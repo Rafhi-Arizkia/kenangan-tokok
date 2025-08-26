@@ -4,23 +4,24 @@ import { sequelize } from '../database/connection';
 export interface GiftReviewImageAttributes {
   id: string;
   review_id: string;
-  image_url: string;
-  alt_text?: string;
-  sort_order?: number;
+  url?: string;
   created_at: Date;
   updated_at: Date;
+  deleted_at?: Date;
 }
 
-export interface GiftReviewImageCreationAttributes extends Optional<GiftReviewImageAttributes, 'id' | 'created_at' | 'updated_at'> {}
+export interface GiftReviewImageCreationAttributes 
+  extends Optional<GiftReviewImageAttributes, 'id' | 'created_at' | 'updated_at' | 'deleted_at'> {}
 
-export class GiftReviewImage extends Model<GiftReviewImageAttributes, GiftReviewImageCreationAttributes> implements GiftReviewImageAttributes {
+export class GiftReviewImage 
+  extends Model<GiftReviewImageAttributes, GiftReviewImageCreationAttributes> 
+  implements GiftReviewImageAttributes {
   public id!: string;
   public review_id!: string;
-  public image_url!: string;
-  public alt_text?: string;
-  public sort_order?: number;
+  public url?: string;
   public created_at!: Date;
   public updated_at!: Date;
+  public deleted_at?: Date;
 }
 
 GiftReviewImage.init(
@@ -37,17 +38,11 @@ GiftReviewImage.init(
         model: 'gift__reviews',
         key: 'id',
       },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
     },
-    image_url: {
-      type: DataTypes.STRING(500),
-      allowNull: false,
-    },
-    alt_text: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
-    },
-    sort_order: {
-      type: DataTypes.INTEGER,
+    url: {
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     created_at: {
@@ -58,6 +53,10 @@ GiftReviewImage.init(
       type: DataTypes.DATE,
       allowNull: false,
     },
+    deleted_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   },
   {
     sequelize,
@@ -66,8 +65,9 @@ GiftReviewImage.init(
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
+    paranoid: true,
+    deletedAt: 'deleted_at',
   }
 );
 
-// Export with Model suffix for consistency
 export { GiftReviewImage as GiftReviewImageModel };

@@ -6,57 +6,52 @@ export interface ShopAttributes {
   user_id: number;
   name: string;
   description?: string;
-  logo?: string;
-  banner?: string;
+  display_address?: string;
+  photo?: string;
   phone?: string;
-  email?: string;
-  website?: string;
-  address?: string;
-  city?: string;
-  province?: string;
-  postal_code?: string;
-  is_active: boolean;
-  is_verified: boolean;
-  rating?: number;
-  total_products?: number;
-  total_orders?: number;
-  created_at: Date;
-  updated_at: Date;
-  deleted_at?: Date;
+  contact?: string;
+  fee_percent?: number;
+  bank_type?: string;
+  bank_number?: string;
+  bank_name?: string;
+  use_shipper?: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt?: Date;
+  is_can_claim: number; // TINYINT(1) → pakai number (0/1)
+  is_claimed: number;   // TINYINT(1) → pakai number (0/1)
 }
 
-interface ShopCreationAttributes extends Optional<ShopAttributes, 'id' | 'created_at' | 'updated_at'> {}
+export interface ShopCreationAttributes extends Optional<ShopAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
 
 export class Shop extends Model<ShopAttributes, ShopCreationAttributes> implements ShopAttributes {
   public id!: number;
   public user_id!: number;
   public name!: string;
   public description?: string;
-  public logo?: string;
-  public banner?: string;
+  public display_address?: string;
+  public photo?: string;
   public phone?: string;
-  public email?: string;
-  public website?: string;
-  public address?: string;
-  public city?: string;
-  public province?: string;
-  public postal_code?: string;
-  public is_active!: boolean;
-  public is_verified!: boolean;
-  public rating?: number;
-  public total_products?: number;
-  public total_orders?: number;
-  public created_at!: Date;
-  public updated_at!: Date;
-  public deleted_at?: Date;
+  public contact?: string;
+  public fee_percent?: number;
+  public bank_type?: string;
+  public bank_number?: string;
+  public bank_name?: string;
+  public use_shipper?: boolean;
+  public createdAt!: Date;
+  public updatedAt!: Date;
+  public deletedAt?: Date;
+  public is_can_claim!: number;
+  public is_claimed!: number;
 }
 
 Shop.init(
   {
     id: {
-      type: DataTypes.BIGINT,
-      primaryKey: true,
       autoIncrement: true,
+      type: DataTypes.BIGINT,
+      allowNull: false,
+      primaryKey: true,
     },
     user_id: {
       type: DataTypes.BIGINT,
@@ -70,86 +65,78 @@ Shop.init(
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    logo: {
-      type: DataTypes.STRING(500),
-      allowNull: true,
-    },
-    banner: {
-      type: DataTypes.STRING(500),
-      allowNull: true,
-    },
-    phone: {
-      type: DataTypes.STRING(50),
-      allowNull: true,
-    },
-    email: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
-    },
-    website: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
-    },
-    address: {
+    display_address: {
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    city: {
-      type: DataTypes.STRING(255),
+    photo: {
+      type: DataTypes.TEXT,
       allowNull: true,
     },
-    province: {
-      type: DataTypes.STRING(255),
+    phone: {
+      type: DataTypes.STRING(20),
       allowNull: true,
     },
-    postal_code: {
+    contact: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    fee_percent: {
+      type: DataTypes.FLOAT,
+      allowNull: true,
+      defaultValue: 0,
+    },
+    bank_type: {
       type: DataTypes.STRING(10),
       allowNull: true,
     },
-    is_active: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true,
-    },
-    is_verified: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-    },
-    rating: {
-      type: DataTypes.DECIMAL(3, 2),
+    bank_number: {
+      type: DataTypes.STRING(30),
       allowNull: true,
     },
-    total_products: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0,
+    bank_name: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
     },
-    total_orders: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0,
+    use_shipper: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
     },
-    created_at: {
+    createdAt: {
       type: DataTypes.DATE,
       allowNull: false,
     },
-    updated_at: {
+    updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
     },
-    deleted_at: {
+    deletedAt: {
       type: DataTypes.DATE,
       allowNull: true,
+    },
+    is_can_claim: {
+      type: DataTypes.TINYINT({ length: 1 }),
+      allowNull: false,
+      defaultValue: 1,
+    },
+    is_claimed: {
+      type: DataTypes.TINYINT({ length: 1 }),
+      allowNull: false,
+      defaultValue: 0,
     },
   },
   {
     sequelize,
     modelName: 'Shop',
     tableName: 'shop',
-    timestamps: true,
-    paranoid: true,
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
-    deletedAt: 'deleted_at',
+    indexes: [
+      {
+        type: 'FULLTEXT',
+        name: 'shop_name_idx',
+        fields: ['name'],
+      },
+    ],
   }
 );
 
-// Export with Model suffix for consistency
 export { Shop as ShopModel };

@@ -1,7 +1,9 @@
 import fastify from "fastify";
 import helmet from "@fastify/helmet";
 import cors from "@fastify/cors";
-import { sequelize } from "./models";
+import { sequelize } from "./database/connection";
+// Import models index to initialize all models and associations
+import "./models";
 import { registerScalar } from "./plugins/scalar.plugin";
 import routesV1 from "./routes/v1/index.routes";
 import 'dotenv/config';
@@ -88,7 +90,7 @@ const start = async () => {
 
     // Authenticate database
     await sequelize.authenticate();
-
+    
     const port = Number(process.env.PORT) || 3000;
     const host = process.env.HOST || "0.0.0.0";
     await server.listen({ port, host });

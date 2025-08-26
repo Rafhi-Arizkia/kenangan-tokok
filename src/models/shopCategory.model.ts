@@ -1,58 +1,69 @@
-import { DataTypes, Model } from 'sequelize';
+import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from '../database/connection';
 
 export interface ShopCategoryAttributes {
   id: number;
-  shop_id: number;
   category_id: number;
-  created_at?: Date;
-  updated_at?: Date;
+  sub_category: string;
+  shop_id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt?: Date | null;
 }
 
-export interface ShopCategoryCreationAttributes extends Omit<ShopCategoryAttributes, 'id' | 'created_at' | 'updated_at'> {}
+export interface ShopCategoryCreationAttributes
+  extends Optional<ShopCategoryAttributes, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> {}
 
-export class ShopCategoryModel extends Model<ShopCategoryAttributes, ShopCategoryCreationAttributes> implements ShopCategoryAttributes {
+export class ShopCategoryModel
+  extends Model<ShopCategoryAttributes, ShopCategoryCreationAttributes>
+  implements ShopCategoryAttributes
+{
   public id!: number;
-  public shop_id!: number;
   public category_id!: number;
-  public readonly created_at!: Date;
-  public readonly updated_at!: Date;
+  public sub_category!: string;
+  public shop_id!: number;
+  public createdAt!: Date;
+  public updatedAt!: Date;
+  public deletedAt?: Date | null;
 }
 
 ShopCategoryModel.init(
   {
     id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
       autoIncrement: true,
-    },
-    shop_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: {
-        model: 'shops',
-        key: 'id',
-      },
+      primaryKey: true,
     },
     category_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: {
-        model: 'categories',
-        key: 'id',
-      },
+    },
+    sub_category: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    shop_id: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
   },
   {
     sequelize,
-    tableName: 'shop_categories',
+    tableName: 'shop_category',
     timestamps: true,
-    underscored: true,
-    indexes: [
-      {
-        unique: true,
-        fields: ['shop_id', 'category_id'],
-      },
-    ],
+    paranoid: true, // untuk soft delete → gunakan deletedAt
   }
 );
