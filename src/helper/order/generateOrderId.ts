@@ -1,4 +1,5 @@
-import { OrderModel } from '../../models';
+import { OrderModel } from "../../models";
+
 
 // Generate a unique order id like legacy implementation: prefix KN + 6 chars from shuffled alphabet
 export default async function generateOrderId(): Promise<string> {
