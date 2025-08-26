@@ -10,22 +10,16 @@ export const categorySchema = {
   type: 'object',
   properties: {
     id: { type: 'integer', description: 'Category unique identifier' },
-    parent_id: { type: 'integer', description: 'Parent category ID for hierarchical structure' },
     name: { type: 'string', description: 'Category name' },
-    description: { type: 'string', description: 'Category description' },
-    icon: { type: 'string', format: 'uri', description: 'Category icon URL' },
-    image: { type: 'string', format: 'uri', description: 'Category image URL' },
-    is_active: { type: 'boolean', description: 'Whether category is active' },
-    sort_order: { type: 'integer', minimum: 0, description: 'Display order' },
-    created_at: { type: 'string', format: 'date-time', description: 'Creation timestamp' },
-    updated_at: { type: 'string', format: 'date-time', description: 'Last update timestamp' },
+    parent_id: { type: 'integer', description: 'Parent category ID for hierarchical structure' },
+    image_url: { type: 'string', format: 'uri', description: 'Category image URL' },
   },
 };
 
 // GET /categories - Get all categories
-export const getAllCategoriesSchema: FastifySchema = {
-  summary: 'Get all categories with optional hierarchy',
-  description: 'Retrieve a list of categories with optional filtering and hierarchy support',
+export const getAllCategoriesSchema = {
+  summary: 'Get all categories',
+  description: 'Retrieve a list of categories',
   tags: ['Category'],
   querystring: {
     type: 'object',
@@ -33,8 +27,6 @@ export const getAllCategoriesSchema: FastifySchema = {
       page: { type: 'integer', minimum: 1, default: 1, description: 'Page number' },
       limit: { type: 'integer', minimum: 1, maximum: 100, default: 10, description: 'Items per page' },
       parent_id: { type: 'integer', description: 'Filter by parent category ID' },
-      is_active: { type: 'boolean', description: 'Filter by active status' },
-      include_children: { type: 'boolean', default: false, description: 'Include child categories' },
     },
   },
   response: {
@@ -60,7 +52,7 @@ export const getAllCategoriesSchema: FastifySchema = {
 };
 
 // GET /categories/:id - Get category by ID
-export const getCategoryByIdSchema: FastifySchema = {
+export const getCategoryByIdSchema = {
   summary: 'Get category by ID',
   description: 'Retrieve a single category by its unique identifier',
   tags: ['Category'],
@@ -69,13 +61,6 @@ export const getCategoryByIdSchema: FastifySchema = {
     required: ['id'],
     properties: {
       id: { type: 'integer', description: 'Category ID' },
-    },
-  },
-  querystring: {
-    type: 'object',
-    properties: {
-      include_children: { type: 'boolean', default: false, description: 'Include child categories' },
-      include_products_count: { type: 'boolean', default: false, description: 'Include product count' },
     },
   },
   response: {
@@ -92,7 +77,7 @@ export const getCategoryByIdSchema: FastifySchema = {
 };
 
 // POST /categories - Create new category
-export const createCategorySchema: FastifySchema = {
+export const createCategorySchema = {
   summary: 'Create new category',
   description: 'Create a new product category',
   tags: ['Category'],
@@ -100,13 +85,9 @@ export const createCategorySchema: FastifySchema = {
     type: 'object',
     required: ['name'],
     properties: {
-      parent_id: { type: 'integer', description: 'Parent category ID for hierarchical structure' },
       name: { type: 'string', minLength: 1, maxLength: 255, description: 'Category name' },
-      description: { type: 'string', maxLength: 2000, description: 'Category description' },
-      icon: { type: 'string', format: 'uri', description: 'Category icon URL' },
-      image: { type: 'string', format: 'uri', description: 'Category image URL' },
-      is_active: { type: 'boolean', default: true, description: 'Whether category is active' },
-      sort_order: { type: 'integer', minimum: 0, default: 0, description: 'Display order' },
+      parent_id: { type: 'integer', description: 'Parent category ID for hierarchical structure' },
+      image_url: { type: 'string', format: 'uri', description: 'Category image URL' },
     },
   },
   response: {
@@ -123,7 +104,7 @@ export const createCategorySchema: FastifySchema = {
 };
 
 // PUT /categories/:id - Update category
-export const updateCategorySchema: FastifySchema = {
+export const updateCategorySchema = {
   summary: 'Update category',
   description: 'Update an existing category',
   tags: ['Category'],
@@ -137,13 +118,9 @@ export const updateCategorySchema: FastifySchema = {
   body: {
     type: 'object',
     properties: {
-      parent_id: { type: 'integer', description: 'Parent category ID for hierarchical structure' },
       name: { type: 'string', minLength: 1, maxLength: 255, description: 'Category name' },
-      description: { type: 'string', maxLength: 2000, description: 'Category description' },
-      icon: { type: 'string', format: 'uri', description: 'Category icon URL' },
-      image: { type: 'string', format: 'uri', description: 'Category image URL' },
-      is_active: { type: 'boolean', description: 'Whether category is active' },
-      sort_order: { type: 'integer', minimum: 0, description: 'Display order' },
+      parent_id: { type: 'integer', description: 'Parent category ID for hierarchical structure' },
+      image_url: { type: 'string', format: 'uri', description: 'Category image URL' },
     },
   },
   response: {
@@ -161,9 +138,9 @@ export const updateCategorySchema: FastifySchema = {
 };
 
 // DELETE /categories/:id - Delete category
-export const deleteCategorySchema: FastifySchema = {
+export const deleteCategorySchema = {
   summary: 'Delete category',
-  description: 'Delete a category from the system (soft delete)',
+  description: 'Delete a category from the system',
   tags: ['Category'],
   params: {
     type: 'object',
@@ -175,19 +152,12 @@ export const deleteCategorySchema: FastifySchema = {
   response: {
     200: successResponseSchema,
     404: errorResponseSchema,
-    409: {
-      ...errorResponseSchema,
-      properties: {
-        ...errorResponseSchema.properties,
-        message: { type: 'string', example: 'Cannot delete category with child categories or associated products' },
-      },
-    },
     500: errorResponseSchema,
   },
 };
 
 // GET /categories/:id/children - Get child categories
-export const getCategoryChildrenSchema: FastifySchema = {
+export const getCategoryChildrenSchema = {
   summary: 'Get child categories',
   description: 'Retrieve all direct child categories of a parent category',
   tags: ['Category'],
@@ -222,7 +192,7 @@ export const getCategoryChildrenSchema: FastifySchema = {
 };
 
 // GET /categories/tree - Get category tree
-export const getCategoryTreeSchema: FastifySchema = {
+export const getCategoryTreeSchema = {
   summary: 'Get category tree',
   description: 'Retrieve the complete category hierarchy as a tree structure',
   tags: ['Category'],

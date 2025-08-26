@@ -12,25 +12,31 @@ export const giftSchema = {
     id: { type: 'integer', description: 'Gift unique identifier' },
     shop_id: { type: 'integer', description: 'Shop ID that owns this gift' },
     category_id: { type: 'integer', description: 'Category ID for this gift' },
+    sub_category: { type: 'string', description: 'Sub category' },
     name: { type: 'string', description: 'Gift name' },
     description: { type: 'string', description: 'Gift description' },
     price: { type: 'number', minimum: 0, description: 'Gift price' },
-    discount_price: { type: 'number', minimum: 0, description: 'Discounted price' },
-    weight: { type: 'number', minimum: 0, description: 'Gift weight in grams' },
-    stock: { type: 'integer', minimum: 0, description: 'Available stock' },
-    min_order: { type: 'integer', minimum: 1, description: 'Minimum order quantity' },
-    max_order: { type: 'integer', minimum: 1, description: 'Maximum order quantity' },
-    is_active: { type: 'boolean', description: 'Whether gift is active' },
-    is_featured: { type: 'boolean', description: 'Whether gift is featured' },
-    sku: { type: 'string', description: 'Stock Keeping Unit' },
-    tags: { type: 'string', description: 'Gift tags for search' },
-    meta_title: { type: 'string', description: 'SEO meta title' },
-    meta_description: { type: 'string', description: 'SEO meta description' },
-    rating: { type: 'number', minimum: 0, maximum: 5, description: 'Average rating' },
-    total_reviews: { type: 'integer', minimum: 0, description: 'Total number of reviews' },
     total_sold: { type: 'integer', minimum: 0, description: 'Total units sold' },
-    created_at: { type: 'string', format: 'date-time', description: 'Creation timestamp' },
-    updated_at: { type: 'string', format: 'date-time', description: 'Last update timestamp' },
+    photo: { type: 'string', format: 'uri', description: 'Main photo URL or path' },
+    minimum_days: { type: 'integer', description: 'Minimum lead time in days' },
+    is_available: { type: 'boolean', description: 'Whether gift is available' },
+    weight: { type: 'number', description: 'Weight' },
+    height: { type: 'number', description: 'Height' },
+    width: { type: 'number', description: 'Width' },
+    length: { type: 'number', description: 'Length' },
+    external_id: { type: 'string', description: 'External system id' },
+    external_url: { type: 'string', format: 'uri', description: 'External URL' },
+    rating: { type: 'number', minimum: 0, maximum: 5, description: 'Average rating' },
+    status_download_photo: { type: 'string', enum: ['PENDING', 'SUCCESS', 'FAILED'], description: 'Photo download status' },
+    gift_share_link: { type: 'string', format: 'uri', description: 'Share link' },
+    extra_data: { type: 'string', description: 'Extra JSON data (stringified)' },
+    stock: { type: 'integer', minimum: 0, description: 'Available stock' },
+    gift_variants_id: { type: 'integer', description: 'Variants group id' },
+    variant_combinations: { type: 'string', description: 'Variant combinations JSON (stringified)' },
+    createdAt: { type: 'string', format: 'date-time', description: 'Creation timestamp' },
+    updatedAt: { type: 'string', format: 'date-time', description: 'Last update timestamp' },
+    syncedAt: { type: 'string', format: 'date-time', description: 'Last sync timestamp' },
+    deletedAt: { type: 'string', format: 'date-time', description: 'Deletion timestamp' },
   },
 };
 
@@ -83,7 +89,7 @@ export const giftSpecificationSchema = {
 };
 
 // GET /gifts - Get all gifts
-export const getAllGiftsSchema: FastifySchema = {
+export const getAllGiftsSchema = {
   summary: 'Get all gifts with pagination and filtering',
   description: 'Retrieve a paginated list of gifts with optional filtering by shop, category, price range, etc.',
   tags: ['Gift'],
@@ -136,7 +142,7 @@ export const getAllGiftsSchema: FastifySchema = {
 };
 
 // GET /gifts/:id - Get gift by ID
-export const getGiftByIdSchema: FastifySchema = {
+export const getGiftByIdSchema = {
   summary: 'Get gift by ID',
   description: 'Retrieve a single gift by its unique identifier',
   tags: ['Gift'],
@@ -161,7 +167,7 @@ export const getGiftByIdSchema: FastifySchema = {
 };
 
 // POST /gifts - Create new gift
-export const createGiftSchema: FastifySchema = {
+export const createGiftSchema = {
   summary: 'Create new gift',
   description: 'Create a new gift product in the system',
   tags: ['Gift'],
@@ -169,22 +175,20 @@ export const createGiftSchema: FastifySchema = {
     type: 'object',
     required: ['shop_id', 'name', 'price'],
     properties: {
-      shop_id: { type: 'integer', description: 'Shop ID that owns this gift' },
-      category_id: { type: 'integer', description: 'Category ID for this gift' },
-      name: { type: 'string', minLength: 1, maxLength: 255, description: 'Gift name' },
-      description: { type: 'string', maxLength: 2000, description: 'Gift description' },
-      price: { type: 'number', minimum: 0, description: 'Gift price' },
-      discount_price: { type: 'number', minimum: 0, description: 'Discounted price' },
-      weight: { type: 'number', minimum: 0, description: 'Gift weight in grams' },
-      stock: { type: 'integer', minimum: 0, default: 0, description: 'Available stock' },
-      min_order: { type: 'integer', minimum: 1, default: 1, description: 'Minimum order quantity' },
-      max_order: { type: 'integer', minimum: 1, description: 'Maximum order quantity' },
-      sku: { type: 'string', description: 'Stock Keeping Unit' },
-      tags: { type: 'string', description: 'Gift tags for search' },
-      meta_title: { type: 'string', maxLength: 255, description: 'SEO meta title' },
-      meta_description: { type: 'string', maxLength: 500, description: 'SEO meta description' },
-      is_active: { type: 'boolean', default: true, description: 'Whether gift is active' },
-      is_featured: { type: 'boolean', default: false, description: 'Whether gift is featured' },
+  shop_id: { type: 'integer', description: 'Shop ID that owns this gift' },
+  category_id: { type: 'integer', description: 'Category ID for this gift' },
+  sub_category: { type: 'string', maxLength: 255, description: 'Sub category' },
+  name: { type: 'string', minLength: 1, maxLength: 255, description: 'Gift name' },
+  description: { type: 'string', maxLength: 2000, description: 'Gift description' },
+  price: { type: 'number', minimum: 0, description: 'Gift price' },
+  photo: { type: 'string', description: 'Main photo URL or path' },
+  minimum_days: { type: 'integer', description: 'Minimum lead time in days' },
+  is_available: { type: 'boolean', default: true, description: 'Whether gift is available' },
+  weight: { type: 'number', description: 'Weight' },
+  height: { type: 'number', description: 'Height' },
+  width: { type: 'number', description: 'Width' },
+  length: { type: 'number', description: 'Length' },
+  stock: { type: 'integer', minimum: 0, default: 0, description: 'Available stock' },
     },
   },
   response: {
@@ -201,7 +205,7 @@ export const createGiftSchema: FastifySchema = {
 };
 
 // PUT /gifts/:id - Update gift
-export const updateGiftSchema: FastifySchema = {
+export const updateGiftSchema = {
   summary: 'Update gift',
   description: 'Update an existing gift product',
   tags: ['Gift'],
@@ -215,21 +219,19 @@ export const updateGiftSchema: FastifySchema = {
   body: {
     type: 'object',
     properties: {
-      category_id: { type: 'integer', description: 'Category ID for this gift' },
-      name: { type: 'string', minLength: 1, maxLength: 255, description: 'Gift name' },
-      description: { type: 'string', maxLength: 2000, description: 'Gift description' },
-      price: { type: 'number', minimum: 0, description: 'Gift price' },
-      discount_price: { type: 'number', minimum: 0, description: 'Discounted price' },
-      weight: { type: 'number', minimum: 0, description: 'Gift weight in grams' },
-      stock: { type: 'integer', minimum: 0, description: 'Available stock' },
-      min_order: { type: 'integer', minimum: 1, description: 'Minimum order quantity' },
-      max_order: { type: 'integer', minimum: 1, description: 'Maximum order quantity' },
-      is_active: { type: 'boolean', description: 'Whether gift is active' },
-      is_featured: { type: 'boolean', description: 'Whether gift is featured' },
-      sku: { type: 'string', description: 'Stock Keeping Unit' },
-      tags: { type: 'string', description: 'Gift tags for search' },
-      meta_title: { type: 'string', maxLength: 255, description: 'SEO meta title' },
-      meta_description: { type: 'string', maxLength: 500, description: 'SEO meta description' },
+  category_id: { type: 'integer', description: 'Category ID for this gift' },
+  sub_category: { type: 'string', maxLength: 255, description: 'Sub category' },
+  name: { type: 'string', minLength: 1, maxLength: 255, description: 'Gift name' },
+  description: { type: 'string', maxLength: 2000, description: 'Gift description' },
+  price: { type: 'number', minimum: 0, description: 'Gift price' },
+  photo: { type: 'string', description: 'Main photo URL or path' },
+  minimum_days: { type: 'integer', description: 'Minimum lead time in days' },
+  is_available: { type: 'boolean', description: 'Whether gift is available' },
+  weight: { type: 'number', description: 'Weight' },
+  height: { type: 'number', description: 'Height' },
+  width: { type: 'number', description: 'Width' },
+  length: { type: 'number', description: 'Length' },
+  stock: { type: 'integer', minimum: 0, description: 'Available stock' },
     },
   },
   response: {
@@ -247,7 +249,7 @@ export const updateGiftSchema: FastifySchema = {
 };
 
 // DELETE /gifts/:id - Delete gift
-export const deleteGiftSchema: FastifySchema = {
+export const deleteGiftSchema = {
   summary: 'Delete gift',
   description: 'Delete a gift product from the system',
   tags: ['Gift'],
@@ -266,7 +268,7 @@ export const deleteGiftSchema: FastifySchema = {
 };
 
 // GET /gifts/shop/:shopId - Get gifts by shop ID
-export const getGiftsByShopIdSchema: FastifySchema = {
+export const getGiftsByShopIdSchema = {
   summary: 'Get gifts by shop ID',
   description: 'Retrieve all gifts belonging to a specific shop',
   tags: ['Gift'],
@@ -309,7 +311,7 @@ export const getGiftsByShopIdSchema: FastifySchema = {
 };
 
 // POST /gifts/images - Add gift image
-export const addGiftImageSchema: FastifySchema = {
+export const addGiftImageSchema = {
   summary: 'Add gift image',
   description: 'Add a new image to a gift product',
   tags: ['Gift'],
@@ -338,7 +340,7 @@ export const addGiftImageSchema: FastifySchema = {
 };
 
 // POST /gifts/reviews - Add gift review
-export const addGiftReviewSchema: FastifySchema = {
+export const addGiftReviewSchema = {
   summary: 'Add gift review',
   description: 'Add a new review for a gift product',
   tags: ['Gift'],
@@ -369,7 +371,7 @@ export const addGiftReviewSchema: FastifySchema = {
 };
 
 // GET /gifts/:id/reviews - Get gift reviews
-export const getGiftReviewsSchema: FastifySchema = {
+export const getGiftReviewsSchema = {
   summary: 'Get gift reviews',
   description: 'Retrieve all reviews for a specific gift',
   tags: ['Gift'],
@@ -413,7 +415,7 @@ export const getGiftReviewsSchema: FastifySchema = {
 };
 
 // POST /gifts/specifications - Add gift specification
-export const addGiftSpecificationSchema: FastifySchema = {
+export const addGiftSpecificationSchema = {
   summary: 'Add gift specification',
   description: 'Add a new specification to a gift product',
   tags: ['Gift'],
