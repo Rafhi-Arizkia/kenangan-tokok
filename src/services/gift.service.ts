@@ -5,20 +5,23 @@ import { Op, WhereOptions } from 'sequelize';
 
 export class GiftService {
   async getAllGifts(queryParams: GiftQueryDTO) {
-    const { 
-      page = 1, 
-      limit = 10, 
-      search, 
-      shop_id, 
-      category_id, 
-      is_active, 
+    const {
+      search,
+      shop_id,
+      category_id,
+      is_active,
       is_featured,
       min_price,
       max_price,
       sort_by = 'created_at',
       sort_order = 'DESC'
     } = queryParams;
-    
+
+    let { page = 1, limit = 10 } = queryParams;
+
+    page = Number(page) || 1;
+    limit = Number(limit) || 10;
+
     const { offset, pagination } = paginationHelper(page, limit, 0);
 
     // Build where condition
@@ -88,7 +91,7 @@ export class GiftService {
         { model: GiftSpecificationModel, as: 'specifications' }
       ]
     });
-    
+
     if (!gift) {
       throw new Error('Gift not found');
     }
