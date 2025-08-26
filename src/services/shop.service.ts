@@ -1,11 +1,12 @@
-import { ShopModel } from '../models';
+// Update the import path below if your ShopModel is located elsewhere, e.g. '../models/shop.model'
+import { ShopModel } from '../models/shop.model';
 import { CreateShopDTO, UpdateShopDTO, ShopQueryDTO } from '../dtos/shop.dto';
 import { paginationHelper } from '../utils/response';
 import { Op, WhereOptions } from 'sequelize';
 
 export class ShopService {
   async getAllShops(queryParams: ShopQueryDTO) {
-    const { page = 1, limit = 10, search, is_active, is_verified, city, province } = queryParams;
+    const { page = 1, limit = 10, search,  city, province } = queryParams;
     const { offset, pagination } = paginationHelper(page, limit, 0);
 
     // Build where condition
@@ -17,14 +18,6 @@ export class ShopService {
         { description: { [Op.like]: `%${search}%` } },
         { email: { [Op.like]: `%${search}%` } }
       ];
-    }
-
-    if (is_active !== undefined) {
-      whereCondition.is_active = is_active;
-    }
-
-    if (is_verified !== undefined) {
-      whereCondition.is_verified = is_verified;
     }
 
     if (city) {
@@ -63,8 +56,8 @@ export class ShopService {
   async createShop(shopData: CreateShopDTO) {
     const shop = await ShopModel.create({
       ...shopData,
-      is_active: shopData.is_active ?? true,
-      is_verified: shopData.is_verified ?? false
+      is_can_claim: 0,
+      is_claimed: 0
     });
     return shop;
   }

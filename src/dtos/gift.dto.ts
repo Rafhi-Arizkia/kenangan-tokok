@@ -1,63 +1,61 @@
 export interface GiftDTO {
   id: number;
   shop_id: number;
-  category_id?: number;
+  category_id: number;
+  sub_category?: string;
   name: string;
   description?: string;
   price: number;
-  discount_price?: number;
-  weight?: number;
-  stock?: number;
-  min_order?: number;
-  max_order?: number;
-  is_active: boolean;
-  is_featured: boolean;
-  sku?: string;
-  tags?: string;
-  meta_title?: string;
-  meta_description?: string;
-  rating?: number;
-  total_reviews?: number;
   total_sold?: number;
-  created_at: Date;
-  updated_at: Date;
+  photo?: string;
+  minimum_days?: number;
+  is_available?: boolean;
+  weight?: number;
+  height?: number;
+  width?: number;
+  length?: number;
+  external_id?: string | null;
+  external_url?: string | null;
+  rating?: number | null;
+  status_download_photo?: 'PENDING' | 'SUCCESS' | 'FAILED';
+  gift_share_link?: string | null;
+  extra_data?: string | null;
+  stock?: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface CreateGiftDTO {
   shop_id: number;
-  category_id?: number;
+  category_id: number;
+  sub_category?: string;
   name: string;
   description?: string;
   price: number;
-  discount_price?: number;
+  photo?: string;
+  minimum_days?: number;
+  is_available?: boolean;
   weight?: number;
+  height?: number;
+  width?: number;
+  length?: number;
   stock?: number;
-  min_order?: number;
-  max_order?: number;
-  sku?: string;
-  tags?: string;
-  meta_title?: string;
-  meta_description?: string;
-  is_active?: boolean;
-  is_featured?: boolean;
 }
 
 export interface UpdateGiftDTO {
   category_id?: number;
+  sub_category?: string;
   name?: string;
   description?: string;
   price?: number;
-  discount_price?: number;
+  photo?: string;
+  minimum_days?: number;
+  is_available?: boolean;
   weight?: number;
+  height?: number;
+  width?: number;
+  length?: number;
   stock?: number;
-  min_order?: number;
-  max_order?: number;
-  is_active?: boolean;
-  is_featured?: boolean;
-  sku?: string;
-  tags?: string;
-  meta_title?: string;
-  meta_description?: string;
 }
 
 export interface GiftQueryDTO {
@@ -66,74 +64,62 @@ export interface GiftQueryDTO {
   search?: string;
   shop_id?: number;
   category_id?: number;
-  is_active?: boolean;
-  is_featured?: boolean;
+  is_available?: boolean;
   min_price?: number;
   max_price?: number;
-  sort_by?: 'name' | 'price' | 'created_at' | 'rating' | 'total_sold';
+  sort_by?: 'name' | 'price' | 'createdAt' | 'rating' | 'total_sold';
   sort_order?: 'ASC' | 'DESC';
 }
 
 export interface GiftImageDTO {
   id: string;
   gift_id: number;
-  image_url: string;
-  alt_text?: string;
-  is_primary: boolean;
-  sort_order?: number;
+  url: string;
   created_at: Date;
   updated_at: Date;
 }
 
 export interface CreateGiftImageDTO {
   gift_id: number;
-  image_url: string;
-  alt_text?: string;
-  is_primary: boolean;
-  sort_order?: number;
+  url: string;
 }
 
 export interface GiftReviewDTO {
   id: string;
   gift_id: number;
-  order_item_id?: number;
   user_id?: number;
+  order_item_id?: number;
+  display_name?: string;
+  message: string;
   rating: number;
-  review_text?: string;
-  is_verified: boolean;
-  is_approved: boolean;
-  helpful_count?: number;
-  created_at: Date;
-  updated_at: Date;
+  external_id?: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface CreateGiftReviewDTO {
   gift_id: number;
   order_item_id?: number;
   user_id?: number;
+  display_name?: string;
+  message: string;
   rating: number;
-  review_text?: string;
-  is_verified?: boolean;
-  is_approved?: boolean;
+  external_id?: string;
 }
 
 export interface GiftSpecificationDTO {
   id: string;
   gift_id: number;
-  name: string;
+  key: string;
   value: string;
-  unit?: string;
-  sort_order?: number;
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface CreateGiftSpecificationDTO {
   gift_id: number;
-  name: string;
+  key: string;
   value: string;
-  unit?: string;
-  sort_order?: number;
 }
 
 export interface GiftVariantDTO {

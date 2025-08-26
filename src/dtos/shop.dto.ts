@@ -3,62 +3,54 @@ export interface ShopDTO {
   user_id: number;
   name: string;
   description?: string;
-  logo?: string;
-  banner?: string;
+  display_address?: string;
+  photo?: string;
   phone?: string;
-  email?: string;
-  website?: string;
-  address?: string;
-  city?: string;
-  province?: string;
-  postal_code?: string;
-  is_active: boolean;
-  is_verified: boolean;
-  rating?: number;
-  total_products?: number;
-  total_orders?: number;
-  created_at: Date;
-  updated_at: Date;
+  contact?: string;
+  fee_percent?: number;
+  bank_type?: string;
+  bank_number?: string;
+  bank_name?: string;
+  use_shipper?: boolean;
+  is_can_claim?: number;
+  is_claimed?: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface CreateShopDTO {
   user_id: number;
   name: string;
   description?: string;
-  logo?: string;
-  banner?: string;
+  display_address?: string;
+  photo?: string;
   phone?: string;
-  email?: string;
-  website?: string;
-  address?: string;
-  city?: string;
-  province?: string;
-  postal_code?: string;
-  is_active?: boolean;
-  is_verified?: boolean;
+  contact?: string;
+  fee_percent?: number;
+  bank_type?: string;
+  bank_number?: string;
+  bank_name?: string;
+  use_shipper?: boolean;
 }
 
 export interface UpdateShopDTO {
   name?: string;
   description?: string;
-  logo?: string;
-  banner?: string;
+  display_address?: string;
+  photo?: string;
   phone?: string;
-  email?: string;
-  website?: string;
-  address?: string;
-  city?: string;
-  province?: string;
-  postal_code?: string;
-  is_active?: boolean;
+  contact?: string;
+  fee_percent?: number;
+  bank_type?: string;
+  bank_number?: string;
+  bank_name?: string;
+  use_shipper?: boolean;
 }
 
 export interface ShopQueryDTO {
   page?: number;
   limit?: number;
   search?: string;
-  is_active?: boolean;
-  is_verified?: boolean;
   city?: string;
   province?: string;
 }

@@ -339,6 +339,36 @@ export const addGiftImageSchema = {
   },
 };
 
+// POST /gifts/images/upload - Upload gift image (multipart)
+export const uploadGiftImageSchema = {
+  summary: 'Upload gift image',
+  description: 'Upload an image file for a gift. Use multipart/form-data with file field named "file" and form fields gift_id, alt_text, is_primary, sort_order',
+  tags: ['Gift'],
+  consumes: ['multipart/form-data'],
+  body: {
+    type: 'object',
+    properties: {
+      file: { type: 'string', description: 'Binary file stream (multipart)' },
+      gift_id: { type: 'integer', description: 'Associated gift ID' },
+      alt_text: { type: 'string', description: 'Alternative text' },
+      is_primary: { type: 'boolean', description: 'Whether image is primary' },
+      sort_order: { type: 'integer', description: 'Display order' },
+    },
+    required: ['file', 'gift_id'],
+  },
+  response: {
+    201: {
+      ...successResponseSchema,
+      properties: {
+        ...successResponseSchema.properties,
+        data: giftImageSchema,
+      },
+    },
+    400: errorResponseSchema,
+    500: errorResponseSchema,
+  },
+};
+
 // POST /gifts/reviews - Add gift review
 export const addGiftReviewSchema = {
   summary: 'Add gift review',

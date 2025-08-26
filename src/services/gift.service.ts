@@ -1,4 +1,9 @@
-import { GiftModel, GiftImageModel, GiftReviewModel, GiftSpecificationModel, GiftVariantModel } from '../models';
+// Update the import path below if your models are located elsewhere, e.g. '../models/gift.model'
+import { GiftModel } from '../models/gift.model';
+import { GiftImageModel } from '../models/giftImage.model';
+import { GiftReviewModel } from '../models/giftReview.model';
+import { GiftSpecificationModel } from '../models/giftSpecification.model';
+// import { GiftVariantModel } from '../models/giftVariant.model'; // Uncomment if needed and exists
 import { CreateGiftDTO, UpdateGiftDTO, GiftQueryDTO, CreateGiftImageDTO, CreateGiftReviewDTO, CreateGiftSpecificationDTO } from '../dtos/gift.dto';
 import { paginationHelper } from '../utils/response';
 import { Op, WhereOptions } from 'sequelize';
@@ -9,11 +14,10 @@ export class GiftService {
       search,
       shop_id,
       category_id,
-      is_active,
-      is_featured,
+      is_available,
       min_price,
       max_price,
-      sort_by = 'created_at',
+      sort_by = 'createdAt',
       sort_order = 'DESC'
     } = queryParams;
 
@@ -43,12 +47,8 @@ export class GiftService {
       whereCondition.category_id = category_id;
     }
 
-    if (is_active !== undefined) {
-      whereCondition.is_active = is_active;
-    }
-
-    if (is_featured !== undefined) {
-      whereCondition.is_featured = is_featured;
+    if (is_available !== undefined) {
+      whereCondition.is_available = is_available;
     }
 
     if (min_price !== undefined || max_price !== undefined) {
@@ -64,7 +64,7 @@ export class GiftService {
         {
           model: GiftImageModel,
           as: 'images',
-          where: { is_primary: true },
+          // model has `url` and doesn't store is_primary; keep optional include
           required: false,
         }
       ],
@@ -99,11 +99,14 @@ export class GiftService {
   }
 
   async createGift(giftData: CreateGiftDTO) {
-    const gift = await GiftModel.create({
+    const payload: any = {
       ...giftData,
-      is_active: giftData.is_active ?? true,
-      is_featured: giftData.is_featured ?? false
-    });
+    };
+
+    // ensure defaults expected by model
+    if (payload.total_sold === undefined) payload.total_sold = 0;
+
+    const gift = await GiftModel.create(payload);
     return gift;
   }
 
@@ -144,28 +147,37 @@ export class GiftService {
   }
 
   async addGiftImage(imageData: CreateGiftImageDTO) {
-    const image = await GiftImageModel.create(imageData);
+    // model expects 'url' field
+    const image = await GiftImageModel.create({ ...imageData } as any);
     return image;
   }
 
   async addGiftReview(reviewData: CreateGiftReviewDTO) {
-    const review = await GiftReviewModel.create({
-      ...reviewData,
-      is_verified: reviewData.is_verified ?? false,
-      is_approved: reviewData.is_approved ?? false
-    });
+    // model uses 'message' and doesn't have is_verified/is_approved fields
+    const payload: any = {
+      gift_id: reviewData.gift_id,
+      order_item_id: reviewData.order_item_id,
+      user_id: reviewData.user_id,
+      display_name: reviewData.display_name,
+      message: reviewData.message,
+      rating: reviewData.rating,
+      external_id: reviewData.external_id,
+    };
+
+    const review = await GiftReviewModel.create(payload);
     return review;
   }
 
   async addGiftSpecification(specData: CreateGiftSpecificationDTO) {
-    const specification = await GiftSpecificationModel.create(specData);
+    // model uses 'key' instead of 'name'
+    const specification = await GiftSpecificationModel.create({ ...specData } as any);
     return specification;
   }
 
   async getGiftReviews(giftId: number) {
     const reviews = await GiftReviewModel.findAll({
-      where: { gift_id: giftId, is_approved: true },
-      order: [['created_at', 'DESC']],
+      where: { gift_id: giftId },
+      order: [['createdAt', 'DESC']],
     });
     return reviews;
   }

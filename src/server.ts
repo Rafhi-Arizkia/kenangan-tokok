@@ -77,6 +77,17 @@ const registerSecurity = async (fastifyInstance: typeof server) => {
   } catch (err) {
     fastifyInstance.log.info("@fastify/rate-limit not available, skipping rate limiting");
   }
+
+  try {
+    const multipart = require('@fastify/multipart');
+    await fastifyInstance.register(multipart, {
+      limits: {
+        fileSize: parseInt(process.env.MAX_UPLOAD_SIZE || '10485760'), // 10MB default
+      },
+    });
+  } catch (err) {
+    fastifyInstance.log.info('@fastify/multipart not available, file upload endpoints will fail');
+  }
 };
 
 const startServer = async () => {
