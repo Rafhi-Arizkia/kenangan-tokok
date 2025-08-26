@@ -10,18 +10,14 @@ export const orderSchema = {
   type: 'object',
   properties: {
     id: { type: 'string', description: 'Order unique identifier' },
+    invoice_url: { type: 'string', description: 'Invoice URL' },
+    shipper_id: { type: 'string', description: 'Shipper ID' },
+    awb: { type: 'string', description: 'Air Waybill number' },
+    pickup_code: { type: 'string', description: 'Pickup code' },
+    confirmation_deadline: { type: 'string', format: 'date-time', description: 'Confirmation deadline' },
+    date_ordered_for: { type: 'string', format: 'date-time', description: 'Date ordered for' },
+    shop_id: { type: 'string', description: 'Shop ID' },
     order_group_id: { type: 'integer', description: 'Order group ID' },
-    shop_id: { type: 'integer', description: 'Shop ID' },
-    order_number: { type: 'string', description: 'Human-readable order number' },
-    order_status: { type: 'string', description: 'Current order status' },
-    total_amount: { type: 'number', minimum: 0, description: 'Total order amount before discounts' },
-    total_discount: { type: 'number', minimum: 0, description: 'Total discount amount' },
-    shipping_cost: { type: 'number', minimum: 0, description: 'Shipping cost' },
-    tax_amount: { type: 'number', minimum: 0, description: 'Tax amount' },
-    grand_total: { type: 'number', minimum: 0, description: 'Final total amount' },
-    notes: { type: 'string', description: 'Order notes' },
-    created_at: { type: 'string', format: 'date-time', description: 'Creation timestamp' },
-    updated_at: { type: 'string', format: 'date-time', description: 'Last update timestamp' },
   },
 };
 
@@ -49,8 +45,8 @@ export const orderGroupSchema = {
     payment_method: { type: 'string', description: 'Payment method used' },
     payment_status: { type: 'string', description: 'Payment status' },
     notes: { type: 'string', description: 'Order group notes' },
-    created_at: { type: 'string', format: 'date-time', description: 'Creation timestamp' },
-    updated_at: { type: 'string', format: 'date-time', description: 'Last update timestamp' },
+  created_at: { type: 'string', format: 'date-time', description: 'Creation timestamp' },
+  updated_at: { type: 'string', format: 'date-time', description: 'Last update timestamp' },
   },
 };
 
@@ -59,17 +55,14 @@ export const orderItemSchema = {
   type: 'object',
   properties: {
     id: { type: 'integer', description: 'Order item unique identifier' },
+    name: { type: 'string', description: 'Item name' },
+    price: { type: 'number', minimum: 0, description: 'Item price' },
+    vendor_fee: { type: 'number', minimum: 0, description: 'Vendor fee' },
+    qty: { type: 'integer', minimum: 1, description: 'Quantity' },
+    note: { type: 'string', description: 'Item note' },
+    photo: { type: 'string', description: 'Item photo URL' },
     order_id: { type: 'string', description: 'Associated order ID' },
     gift_id: { type: 'integer', description: 'Associated gift ID' },
-    gift_name: { type: 'string', description: 'Gift name at time of order' },
-    gift_price: { type: 'number', minimum: 0, description: 'Gift price at time of order' },
-    quantity: { type: 'integer', minimum: 1, description: 'Quantity ordered' },
-    total_price: { type: 'number', minimum: 0, description: 'Total price for this item' },
-    discount_amount: { type: 'number', minimum: 0, description: 'Discount amount for this item' },
-    notes: { type: 'string', description: 'Item-specific notes' },
-    variant_info: { type: 'string', description: 'Product variant information' },
-    created_at: { type: 'string', format: 'date-time', description: 'Creation timestamp' },
-    updated_at: { type: 'string', format: 'date-time', description: 'Last update timestamp' },
   },
 };
 
@@ -78,22 +71,42 @@ export const orderShipmentSchema = {
   type: 'object',
   properties: {
     id: { type: 'integer', description: 'Shipment unique identifier' },
+    receiver_name: { type: 'string', description: 'Receiver name' },
+    receiver_phone: { type: 'string', description: 'Receiver phone' },
+    sender_name: { type: 'string', description: 'Sender name' },
+    sender_phone: { type: 'string', description: 'Sender phone' },
+    origin_lat: { type: 'string', description: 'Origin latitude' },
+    origin_lng: { type: 'string', description: 'Origin longitude' },
+    origin_address: { type: 'string', description: 'Origin address' },
+    origin_description: { type: 'string', description: 'Origin description' },
+    origin_area: { type: 'integer', description: 'Origin area ID' },
+    dest_lat: { type: 'string', description: 'Destination latitude' },
+    dest_lng: { type: 'string', description: 'Destination longitude' },
+    dest_address: { type: 'string', description: 'Destination address' },
+    dest_description: { type: 'string', description: 'Destination description' },
+    dest_area: { type: 'integer', description: 'Destination area ID' },
+    rate_id: { type: 'integer', description: 'Rate ID' },
+    use_insurance: { type: 'boolean', description: 'Use insurance' },
+    package_heigth: { type: 'number', description: 'Package height' },
+    package_length: { type: 'number', description: 'Package length' },
+    package_type: { type: 'integer', description: 'Package type' },
+    package_price: { type: 'string', description: 'Package price' },
+    package_weight: { type: 'number', description: 'Package weight' },
+    package_width: { type: 'number', description: 'Package width' },
     order_id: { type: 'string', description: 'Associated order ID' },
-    courier_name: { type: 'string', description: 'Courier company name' },
-    tracking_number: { type: 'string', description: 'Package tracking number' },
-    shipping_cost: { type: 'number', minimum: 0, description: 'Shipping cost' },
-    estimated_delivery: { type: 'string', format: 'date-time', description: 'Estimated delivery date' },
-    actual_delivery: { type: 'string', format: 'date-time', description: 'Actual delivery date' },
-    shipment_status: { type: 'string', description: 'Current shipment status' },
-    shipping_address: { type: 'string', description: 'Shipping address' },
-    notes: { type: 'string', description: 'Shipment notes' },
-    created_at: { type: 'string', format: 'date-time', description: 'Creation timestamp' },
-    updated_at: { type: 'string', format: 'date-time', description: 'Last update timestamp' },
+    delivery_logistic_name: { type: 'string', description: 'Delivery logistic name' },
+    delivery_method: { type: 'string', description: 'Delivery method' },
+    delivery_min_day: { type: 'integer', description: 'Delivery minimum days' },
+    delivery_max_day: { type: 'integer', description: 'Delivery maximum days' },
+    delivery_price: { type: 'number', description: 'Delivery price' },
+  createdAt: { type: 'string', format: 'date-time', description: 'Creation timestamp' },
+  updatedAt: { type: 'string', format: 'date-time', description: 'Last update timestamp' },
+  deletedAt: { type: 'string', format: 'date-time', description: 'Deletion timestamp' },
   },
 };
 
 // GET /orders - Get all orders
-export const getAllOrdersSchema: FastifySchema = {
+export const getAllOrdersSchema = {
   summary: 'Get all orders with pagination and filtering',
   description: 'Retrieve a paginated list of orders with optional filtering',
   tags: ['Order'],
@@ -145,7 +158,7 @@ export const getAllOrdersSchema: FastifySchema = {
 };
 
 // GET /orders/:id - Get order by ID
-export const getOrderByIdSchema: FastifySchema = {
+export const getOrderByIdSchema = {
   summary: 'Get order by ID',
   description: 'Retrieve a single order by its unique identifier',
   tags: ['Order'],
@@ -170,30 +183,79 @@ export const getOrderByIdSchema: FastifySchema = {
 };
 
 // POST /orders - Create new order
-export const createOrderSchema: FastifySchema = {
-  summary: 'Create new order',
-  description: 'Create a new order in the system',
+export const createOrderSchema = {
   tags: ['Order'],
   body: {
     type: 'object',
-    required: ['id', 'order_group_id', 'total_amount', 'grand_total'],
+    required: ['buyer_id', 'orders'],
     properties: {
-      id: { type: 'string', description: 'Order unique identifier' },
-      order_group_id: { type: 'integer', description: 'Order group ID' },
-      shop_id: { type: 'integer', description: 'Shop ID' },
-      order_number: { type: 'string', description: 'Human-readable order number' },
-      order_status: { 
-        type: 'string', 
-        enum: ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'],
-        default: 'pending',
-        description: 'Order status' 
-      },
-      total_amount: { type: 'number', minimum: 0, description: 'Total order amount before discounts' },
-      total_discount: { type: 'number', minimum: 0, default: 0, description: 'Total discount amount' },
-      shipping_cost: { type: 'number', minimum: 0, default: 0, description: 'Shipping cost' },
-      tax_amount: { type: 'number', minimum: 0, default: 0, description: 'Tax amount' },
-      grand_total: { type: 'number', minimum: 0, description: 'Final total amount' },
-      notes: { type: 'string', maxLength: 500, description: 'Order notes' },
+      receiver_id: { type: 'integer', description: 'Receiver ID' },
+      buyer_id: { type: 'integer', description: 'Buyer ID' },
+      is_gift: { type: 'integer', enum: [0, 1], description: 'Is gift flag' },
+      is_hidden: { type: 'integer', enum: [0, 1], description: 'Is hidden flag' },
+      is_surprise: { type: 'integer', enum: [0, 1], description: 'Is surprise flag' },
+      orders: {
+        type: 'array',
+        items: {
+          type: 'object',
+          required: ['shopId', 'dateOrderedFor', 'package', 'shipment', 'receiver'],
+          properties: {
+            receiver: {
+              type: 'object',
+              properties: {
+                name: { type: 'string' },
+                phoneNo: { type: 'string' }
+              }
+            },
+            shopId: { type: 'integer', description: 'Shop ID' },
+            dateOrderedFor: { type: 'string', format: 'date', description: 'Date ordered for' },
+            package: {
+              type: 'object',
+              required: ['type', 'items'],
+              properties: {
+                type: { type: 'integer', description: 'Package type' },
+                items: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    required: ['id', 'qty'],
+                    properties: {
+                      id: { type: 'integer', description: 'Product/Gift ID' },
+                      qty: { type: 'integer', minimum: 1, description: 'Quantity' },
+                      note: { type: 'string', description: 'Item note' }
+                    }
+                  }
+                }
+              }
+            },
+            shipment: {
+              type: 'object',
+              required: ['rateId', 'useInsurance', 'method', 'logisticName', 'minDay', 'maxDay', 'price', 'dest'],
+              properties: {
+                rateId: { type: 'integer', description: 'Rate ID' },
+                useInsurance: { type: 'boolean', description: 'Use insurance' },
+                method: { type: 'string', description: 'Shipping method' },
+                logisticName: { type: 'string', description: 'Logistic name' },
+                minDay: { type: 'integer', description: 'Minimum delivery days' },
+                maxDay: { type: 'integer', description: 'Maximum delivery days' },
+                price: { type: 'number', description: 'Shipping price' },
+                dest: {
+                  type: 'object',
+                  required: ['address'],
+                  properties: {
+                    address: { type: 'string', description: 'Destination address' },
+                    lat: { type: 'string', description: 'Latitude' },
+                    lng: { type: 'string', description: 'Longitude' },
+                    areaId: { type: 'string', description: 'Area ID' },
+                    description: { type: 'string', description: 'Address description' },
+                    suburb_id: { type: 'string', description: 'Suburb ID' }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     },
   },
   response: {
@@ -201,7 +263,16 @@ export const createOrderSchema: FastifySchema = {
       ...successResponseSchema,
       properties: {
         ...successResponseSchema.properties,
-        data: orderSchema,
+        data: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean' },
+            errors: { type: 'array' },
+            orderGroup: { type: 'object' },
+            orders: { type: 'array' },
+            response: { type: 'array' }
+          }
+        },
       },
     },
     400: errorResponseSchema,
@@ -210,7 +281,7 @@ export const createOrderSchema: FastifySchema = {
 };
 
 // PUT /orders/:id - Update order
-export const updateOrderSchema: FastifySchema = {
+export const updateOrderSchema = {
   summary: 'Update order',
   description: 'Update an existing order',
   tags: ['Order'],
@@ -252,7 +323,7 @@ export const updateOrderSchema: FastifySchema = {
 };
 
 // DELETE /orders/:id - Delete order
-export const deleteOrderSchema: FastifySchema = {
+export const deleteOrderSchema = {
   summary: 'Delete order',
   description: 'Delete an order from the system',
   tags: ['Order'],
@@ -271,7 +342,7 @@ export const deleteOrderSchema: FastifySchema = {
 };
 
 // GET /orders/shop/:shopId - Get orders by shop ID
-export const getOrdersByShopIdSchema: FastifySchema = {
+export const getOrdersByShopIdSchema = {
   summary: 'Get orders by shop ID',
   description: 'Retrieve all orders for a specific shop',
   tags: ['Order'],
@@ -313,7 +384,7 @@ export const getOrdersByShopIdSchema: FastifySchema = {
 };
 
 // POST /orders/groups - Create order group
-export const createOrderGroupSchema: FastifySchema = {
+export const createOrderGroupSchema = {
   summary: 'Create order group',
   description: 'Create a new order group for multiple orders',
   tags: ['Order'],
@@ -364,7 +435,7 @@ export const createOrderGroupSchema: FastifySchema = {
 };
 
 // GET /orders/groups/:id - Get order group by ID
-export const getOrderGroupByIdSchema: FastifySchema = {
+export const getOrderGroupByIdSchema = {
   summary: 'Get order group by ID',
   description: 'Retrieve an order group with all its orders',
   tags: ['Order'],
@@ -389,7 +460,7 @@ export const getOrderGroupByIdSchema: FastifySchema = {
 };
 
 // POST /orders/items - Add order item
-export const addOrderItemSchema: FastifySchema = {
+export const addOrderItemSchema = {
   summary: 'Add order item',
   description: 'Add an item to an existing order',
   tags: ['Order'],
@@ -422,7 +493,7 @@ export const addOrderItemSchema: FastifySchema = {
 };
 
 // GET /orders/:orderId/items - Get order items
-export const getOrderItemsSchema: FastifySchema = {
+export const getOrderItemsSchema = {
   summary: 'Get order items',
   description: 'Retrieve all items for a specific order',
   tags: ['Order'],
@@ -450,7 +521,7 @@ export const getOrderItemsSchema: FastifySchema = {
 };
 
 // POST /orders/shipments - Create order shipment
-export const createOrderShipmentSchema: FastifySchema = {
+export const createOrderShipmentSchema = {
   summary: 'Create order shipment',
   description: 'Create shipment information for an order',
   tags: ['Order'],
@@ -486,7 +557,7 @@ export const createOrderShipmentSchema: FastifySchema = {
 };
 
 // PUT /orders/shipments/:id - Update order shipment
-export const updateOrderShipmentSchema: FastifySchema = {
+export const updateOrderShipmentSchema = {
   summary: 'Update order shipment',
   description: 'Update shipment information',
   tags: ['Order'],
@@ -529,7 +600,7 @@ export const updateOrderShipmentSchema: FastifySchema = {
 };
 
 // GET /orders/:orderId/shipment - Get order shipment
-export const getOrderShipmentSchema: FastifySchema = {
+export const getOrderShipmentSchema = {
   summary: 'Get order shipment',
   description: 'Retrieve shipment information for an order',
   tags: ['Order'],
@@ -554,7 +625,7 @@ export const getOrderShipmentSchema: FastifySchema = {
 };
 
 // PUT /orders/:orderId/status - Update order status
-export const updateOrderStatusSchema: FastifySchema = {
+export const updateOrderStatusSchema = {
   summary: 'Update order status',
   description: 'Update the status of an order',
   tags: ['Order'],
@@ -587,7 +658,7 @@ export const updateOrderStatusSchema: FastifySchema = {
 };
 
 // GET /orders/:orderId/statuses - Get order status history
-export const getOrderStatusesSchema: FastifySchema = {
+export const getOrderStatusesSchema  = {
   summary: 'Get order status history',
   description: 'Retrieve the complete status history for an order',
   tags: ['Order'],

@@ -38,8 +38,13 @@ export class OrderController {
 
   async createOrder(request: FastifyRequest<{ Body: CreateOrderDTO }>, reply: FastifyReply) {
     try {
-      const order = await orderService.createOrder(request.body);
-      return ResponseHandler.success(reply, order, 'Order created successfully');
+      const result = await orderService.createOrder(request.body);
+      
+      if (!result.success) {
+        return ResponseHandler.error(reply, 'Failed to create order', JSON.stringify(result.errors), 400);
+      }
+      
+      return ResponseHandler.success(reply, result, 'Orders created successfully');
     } catch (error: any) {
       return ResponseHandler.error(reply, 'Failed to create order', error.message, 400);
     }
@@ -82,10 +87,11 @@ export class OrderController {
   }
 
   // OrderGroup endpoints
+  // Note: createOrderGroup method is now handled by createOrder method
+  // This method is kept for compatibility but redirects to createOrder
   async createOrderGroup(request: FastifyRequest<{ Body: CreateOrderGroupDTO }>, reply: FastifyReply) {
     try {
-      const orderGroup = await orderService.createOrderGroup(request.body);
-      return ResponseHandler.success(reply, orderGroup, 'Order group created successfully');
+      return ResponseHandler.error(reply, 'Use createOrder endpoint instead', 'This endpoint is deprecated', 400);
     } catch (error: any) {
       return ResponseHandler.error(reply, 'Failed to create order group', error.message, 400);
     }
@@ -160,12 +166,12 @@ export class OrderController {
   // OrderStatus endpoints
   async updateOrderStatus(request: FastifyRequest<{ 
     Params: { orderId: string }; 
-    Body: { status: string; notes?: string; changed_by?: number } 
+    Body: { statusNameId: number; description?: string } 
   }>, reply: FastifyReply) {
     try {
       const { orderId } = request.params;
-      const { status, notes, changed_by } = request.body;
-      const orderStatus = await orderService.updateOrderStatus(orderId, status, notes, changed_by);
+      const { statusNameId, description } = request.body;
+      const orderStatus = await orderService.updateOrderStatus(orderId, statusNameId, description);
       return ResponseHandler.success(reply, orderStatus, 'Order status updated successfully');
     } catch (error: any) {
       return ResponseHandler.error(reply, 'Failed to update order status', error.message, 400);

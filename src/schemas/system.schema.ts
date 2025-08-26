@@ -1,7 +1,7 @@
 import { FastifySchema } from 'fastify';
 
 // Health Check Schema
-export const healthCheckSchema: FastifySchema = {
+export const healthCheckSchema = {
   summary: 'Health check endpoint',
   description: 'Check the health and status of the API service',
   tags: ['System'],

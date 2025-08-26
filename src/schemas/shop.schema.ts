@@ -13,27 +13,25 @@ export const shopSchema = {
     user_id: { type: 'integer', description: 'Owner user ID' },
     name: { type: 'string', description: 'Shop name' },
     description: { type: 'string', description: 'Shop description' },
-    logo: { type: 'string', format: 'uri', description: 'Shop logo URL' },
-    banner: { type: 'string', format: 'uri', description: 'Shop banner URL' },
+    display_address: { type: 'string', description: 'Display address' },
+    photo: { type: 'string', description: 'Shop photo URL' },
     phone: { type: 'string', description: 'Shop contact phone' },
-    email: { type: 'string', format: 'email', description: 'Shop contact email' },
-    website: { type: 'string', format: 'uri', description: 'Shop website URL' },
-    address: { type: 'string', description: 'Shop physical address' },
-    city: { type: 'string', description: 'Shop city' },
-    province: { type: 'string', description: 'Shop province' },
-    postal_code: { type: 'string', description: 'Shop postal code' },
-    is_active: { type: 'boolean', description: 'Whether shop is active' },
-    is_verified: { type: 'boolean', description: 'Whether shop is verified' },
-    rating: { type: 'number', minimum: 0, maximum: 5, description: 'Shop rating' },
-    total_products: { type: 'integer', minimum: 0, description: 'Total products in shop' },
-    total_orders: { type: 'integer', minimum: 0, description: 'Total orders processed' },
-    created_at: { type: 'string', format: 'date-time', description: 'Creation timestamp' },
-    updated_at: { type: 'string', format: 'date-time', description: 'Last update timestamp' },
+    contact: { type: 'string', description: 'Shop contact details' },
+    fee_percent: { type: 'number', description: 'Platform fee percentage' },
+    bank_type: { type: 'string', description: 'Bank type' },
+    bank_number: { type: 'string', description: 'Bank account number' },
+    bank_name: { type: 'string', description: 'Bank account name' },
+    use_shipper: { type: 'boolean', description: 'Whether shop uses shipper' },
+    is_can_claim: { type: 'integer', description: 'Can claim flag (0/1)' },
+    is_claimed: { type: 'integer', description: 'Claimed flag (0/1)' },
+    createdAt: { type: 'string', format: 'date-time', description: 'Creation timestamp' },
+    updatedAt: { type: 'string', format: 'date-time', description: 'Last update timestamp' },
+    deletedAt: { type: 'string', format: 'date-time', description: 'Deletion timestamp' },
   },
 };
 
 // GET /shops - Get all shops
-export const getAllShopsSchema: FastifySchema = {
+export const getAllShopsSchema = {
   summary: 'Get all shops with pagination and filtering',
   description: 'Retrieve a paginated list of shops with optional filtering',
   tags: ['Shop'],
@@ -72,7 +70,7 @@ export const getAllShopsSchema: FastifySchema = {
 };
 
 // GET /shops/:id - Get shop by ID
-export const getShopByIdSchema: FastifySchema = {
+export const getShopByIdSchema = {
   summary: 'Get shop by ID',
   description: 'Retrieve a single shop by its unique identifier',
   tags: ['Shop'],
@@ -97,7 +95,7 @@ export const getShopByIdSchema: FastifySchema = {
 };
 
 // POST /shops - Create new shop
-export const createShopSchema: FastifySchema = {
+export const createShopSchema = {
   summary: 'Create new shop',
   description: 'Create a new shop in the system',
   tags: ['Shop'],
@@ -145,7 +143,7 @@ export const createShopSchema: FastifySchema = {
 };
 
 // PUT /shops/:id - Update shop
-export const updateShopSchema: FastifySchema = {
+export const updateShopSchema = {
   summary: 'Update shop',
   description: 'Update an existing shop',
   tags: ['Shop'],
@@ -198,7 +196,7 @@ export const updateShopSchema: FastifySchema = {
 };
 
 // DELETE /shops/:id - Delete shop
-export const deleteShopSchema: FastifySchema = {
+export const deleteShopSchema = {
   summary: 'Delete shop',
   description: 'Delete a shop from the system',
   tags: ['Shop'],
@@ -217,7 +215,7 @@ export const deleteShopSchema: FastifySchema = {
 };
 
 // GET /shops/user/:userId - Get shops by user ID
-export const getShopsByUserIdSchema: FastifySchema = {
+export const getShopsByUserIdSchema = {
   summary: 'Get shops by user ID',
   description: 'Retrieve all shops belonging to a specific user',
   tags: ['Shop'],
