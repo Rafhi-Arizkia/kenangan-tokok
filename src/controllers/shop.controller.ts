@@ -9,7 +9,7 @@ export class ShopController {
   async getAllShops(request: FastifyRequest<{ Querystring: ShopQueryDTO }>, reply: FastifyReply) {
     try {
       const result = await shopService.getAllShops(request.query);
-      return ResponseHandler.success(reply, result.shops, 'Shops retrieved successfully', result.pagination);
+      return ResponseHandler.success(reply, result, 'Shops retrieved successfully', result.pagination);
     } catch (error: any) {
   // Log full error for debugging
   // eslint-disable-next-line no-console

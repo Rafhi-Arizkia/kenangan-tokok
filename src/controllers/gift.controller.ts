@@ -17,7 +17,7 @@ export class GiftController {
   async getAllGifts(request: FastifyRequest<{ Querystring: GiftQueryDTO }>, reply: FastifyReply) {
     try {
       const result = await giftService.getAllGifts(request.query);
-      return ResponseHandler.success(reply, result.gifts, 'Gifts retrieved successfully', result.pagination);
+      return ResponseHandler.success(reply, result, 'Gifts retrieved successfully', result.pagination);
     } catch (error: any) {
 
 

@@ -9,7 +9,7 @@ export class GiftVariantController {
   async getAllGiftVariants(request: FastifyRequest<{ Querystring: GiftVariantQueryDTO }>, reply: FastifyReply) {
     try {
       const result = await giftVariantService.getAllGiftVariants(request.query);
-      return ResponseHandler.success(reply, result.variants, 'Gift variants retrieved successfully', result.pagination);
+      return ResponseHandler.success(reply, result, 'Gift variants retrieved successfully', result.pagination);
     } catch (error: any) {
       return ResponseHandler.serverError(reply, 'Failed to retrieve gift variants', error.message);
     }

@@ -9,7 +9,7 @@ export class CategoryController {
   async getAllCategories(request: FastifyRequest, reply: FastifyReply) {
     try {
       const result = await categoryService.getAllCategories(request.query as any);
-      return ResponseHandler.success(reply, result.categories, 'Categories retrieved', result.pagination);
+      return ResponseHandler.success(reply, result, 'Categories retrieved', result.pagination);
     } catch (error: any) {
       return ResponseHandler.error(reply, 'Failed to retrieve categories', error.message);
     }

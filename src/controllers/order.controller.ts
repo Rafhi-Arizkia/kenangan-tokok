@@ -17,7 +17,7 @@ export class OrderController {
   async getAllOrders(request: FastifyRequest<{ Querystring: OrderQueryDTO }>, reply: FastifyReply) {
     try {
       const result = await orderService.getAllOrders(request.query);
-      return ResponseHandler.success(reply, result.orders, 'Orders retrieved successfully', result.pagination);
+      return ResponseHandler.success(reply, result, 'Orders retrieved successfully', result.pagination);
     } catch (error: any) {
       return ResponseHandler.error(reply, 'Failed to retrieve orders', error.message);
     }

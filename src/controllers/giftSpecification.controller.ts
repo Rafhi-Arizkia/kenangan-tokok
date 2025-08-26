@@ -9,7 +9,7 @@ export class GiftSpecificationController {
   async getAllGiftSpecifications(request: FastifyRequest<{ Querystring: GiftSpecificationQueryDTO }>, reply: FastifyReply) {
     try {
       const result = await giftSpecificationService.getAllGiftSpecifications(request.query);
-      return ResponseHandler.success(reply, result.specifications, 'Gift specifications retrieved successfully', result.pagination);
+      return ResponseHandler.success(reply, result, 'Gift specifications retrieved successfully', result.pagination);
     } catch (error: any) {
       return ResponseHandler.serverError(reply, 'Failed to retrieve gift specifications', error.message);
     }

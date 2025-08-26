@@ -9,7 +9,7 @@ export class ShopAddressController {
   async getAllShopAddresses(request: FastifyRequest<{ Querystring: ShopAddressQueryDTO }>, reply: FastifyReply) {
     try {
       const result = await shopAddressService.getAllShopAddresses(request.query);
-      return ResponseHandler.success(reply, result.addresses, 'Shop addresses retrieved successfully', result.pagination);
+      return ResponseHandler.success(reply, result, 'Shop addresses retrieved successfully', result.pagination);
     } catch (error: any) {
       return ResponseHandler.serverError(reply, 'Failed to retrieve shop addresses', error.message);
     }

@@ -9,7 +9,7 @@ export class GiftImageController {
   async getAllGiftImages(request: FastifyRequest<{ Querystring: GiftImageQueryDTO }>, reply: FastifyReply) {
     try {
       const result = await giftImageService.getAllGiftImages(request.query);
-      return ResponseHandler.success(reply, result.images, 'Gift images retrieved successfully', result.pagination);
+      return ResponseHandler.success(reply, result, 'Gift images retrieved successfully', result.pagination);
     } catch (error: any) {
       return ResponseHandler.serverError(reply, 'Failed to retrieve gift images', error.message);
     }
