@@ -45,7 +45,7 @@
             "header": [{"key": "Content-Type", "value": "application/json"}],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Kue & Dessert\",\n  \"parent_id\": null,\n  \"image_url\": \"https://example.com/cake-category.jpg\"\n}"
+              "raw": "{\n  \"name\": \"Kue & Dessert\",\n \"image_url\": \"https://example.com/cake-category.jpg\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/v1/categories",
