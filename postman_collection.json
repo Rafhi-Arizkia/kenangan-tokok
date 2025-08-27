@@ -305,7 +305,7 @@
             "header": [{"key": "Content-Type", "value": "application/json"}],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"shop_id\": 1,\n  \"category_id\": 1,\n  \"name\": \"Kue Ulang Tahun Cokelat\",\n  \"description\": \"Kue cokelat lembut dengan krim vanilla\",\n  \"price\": 150000,\n  \"stock\": 10,\n  \"min_order\": 1,\n  \"max_order\": 5,\n  \"weight\": 1000,\n  \"status\": \"active\"\n}"
+              "raw": "{\n  \"shop_id\": 1,\n  \"category_id\": 1,\n  \"name\": \"Kue Ulang Tahun Cokelat\",\n  \"description\": \"Kue cokelat lembut dengan krim vanilla\",\n  \"price\": 150000,\n  \"stock\": 10,\n  \"min_order\": 1,\n  \"max_order\": 5,\n  \"weight\": 1000,\n  \"status\": \"active\"\n  \"photo\": \"photo\"\n  \"minimum_days\": 5\n  \"sub_category\": 1\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/v1/gifts",
